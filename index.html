@@ -1,65 +1,890 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TrabajoConfiable — Oficios verificados. Gente que responde.</title>
-  <meta name="description" content="Encuentra mecánicos, electricistas, plomeros y técnicos verificados y de confianza cerca de ti.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TrabajoConfiable — Oficios verificados. Gente que responde.</title>
+<meta name="description" content="Encuentra mecánicos, electricistas, plomeros y técnicos verificados y de confianza en Venezuela.">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0D3B66">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<meta property="og:title" content="TrabajoConfiable">
+<meta property="og:description" content="Oficios verificados. Gente que responde.">
+<meta property="og:image" content="./icons/icon-512.png">
+<style>
+/* ============ BASE ============ */
+:root{
+  --brand:#0D3B66; --brand-dark:#082844; --brand-light:#1A5490;
+  --accent:#F5A623; --success:#16A34A; --danger:#DC2626;
+  --bg:#F7F9FB; --card:#FFF; --text:#1B1B1B; --muted:#6B7280;
+  --border:#E5E7EB; --radius:14px;
+  --shadow-sm:0 1px 2px rgba(13,59,102,.06);
+  --shadow-md:0 4px 16px rgba(13,59,102,.08);
+  --shadow-lg:0 12px 40px rgba(13,59,102,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;
+  display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+img{max-width:100%;display:block}
 
-  <!-- PWA -->
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#0D3B66">
-  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+/* ============ HEADER ============ */
+header{background:var(--brand);color:#fff;padding:12px 20px;
+  position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm)}
+.nav{max-width:1200px;margin:0 auto;display:flex;align-items:center;
+  justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;color:#fff}
+.logo-mark{width:36px;height:36px;background:#fff;color:var(--brand);
+  border-radius:10px;display:grid;place-items:center;font-weight:900}
+.nav-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-links a,.nav-links button{color:#fff;font-size:.88rem;font-weight:600;
+  padding:8px 14px;border-radius:10px;transition:background .2s}
+.nav-links a:hover,.nav-links button:hover{background:rgba(255,255,255,.12)}
+.nav-cta{background:#fff !important;color:var(--brand) !important}
+.nav-cta:hover{background:#f0f4f8 !important}
 
-  <!-- Open Graph (para compartir en WhatsApp / Instagram) -->
-  <meta property="og:title" content="TrabajoConfiable">
-  <meta property="og:description" content="Oficios verificados. Gente que responde.">
-  <meta property="og:image" content="./icons/icon-512.png">
-  <meta property="og:type" content="website">
+/* ============ LAYOUT ============ */
+main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:0 20px}
+.view{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  <style>
-    :root {
-      --brand: #0D3B66;
-      --bg: #F7F9FB;
-      --text: #1B1B1B;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      text-align: center;
-      padding: 24px;
-    }
-    h1 { color: var(--brand); font-size: 2rem; margin-bottom: 8px; }
-    p  { font-size: 1rem; color: #555; max-width: 420px; }
-    .badge {
-      display: inline-block;
-      background: var(--brand);
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      margin-top: 24px;
-    }
-  </style>
+/* ============ HERO ============ */
+.hero{padding:64px 20px 48px;text-align:center;
+  background:linear-gradient(180deg,rgba(13,59,102,.05),transparent)}
+.hero h1{font-size:clamp(2rem,5vw,3rem);color:var(--brand);font-weight:900;
+  letter-spacing:-.02em;line-height:1.15;margin-bottom:16px}
+.hero p{font-size:clamp(1rem,2.2vw,1.15rem);color:var(--muted);
+  max-width:640px;margin:0 auto 32px}
+.search-bar{max-width:640px;margin:0 auto;display:flex;gap:8px;background:#fff;
+  padding:8px;border-radius:16px;box-shadow:var(--shadow-md)}
+.search-bar input{flex:1;border:none;outline:none;padding:12px 16px;
+  font-size:1rem;background:transparent;color:var(--text)}
+.search-bar button{background:var(--brand);color:#fff;padding:12px 24px;
+  border-radius:12px;font-weight:700;transition:background .2s}
+.search-bar button:hover{background:var(--brand-light)}
+
+/* ============ SECCIONES ============ */
+.section{padding:32px 0}
+.section-head{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.section-title{font-size:1.4rem;font-weight:800;color:var(--brand)}
+.section-link{color:var(--brand);font-weight:600;font-size:.9rem}
+
+/* ============ CATEGORÍAS ============ */
+.categorias{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.categoria{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px 12px;text-align:center;
+  cursor:pointer;transition:all .2s}
+.categoria:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--brand)}
+.categoria .emoji{font-size:2rem;display:block;margin-bottom:8px}
+.categoria .nombre{font-size:.85rem;font-weight:700;color:var(--brand)}
+
+/* ============ TARJETA TRABAJADOR ============ */
+.grid-trabajadores{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.trabajador-card{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;
+  gap:12px;transition:all .2s}
+.trabajador-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.tc-head{display:flex;gap:12px;align-items:flex-start}
+.tc-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;
+  background:var(--border);flex-shrink:0}
+.tc-info{flex:1;min-width:0}
+.tc-name{font-weight:800;font-size:1.02rem;color:var(--brand);
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tc-verified{color:var(--brand-light);font-size:.9rem}
+.tc-role{font-size:.85rem;color:var(--muted);margin-top:2px}
+.tc-meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.8rem;
+  color:var(--muted);margin-top:8px}
+.tc-meta span{display:flex;align-items:center;gap:4px}
+.tc-badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;
+  background:#EFF4FA;color:var(--brand)}
+.badge-green{background:#DCFCE7;color:#166534}
+.badge-red{background:#FEE2E2;color:#991B1B}
+.badge-gold{background:#FEF3C7;color:#92400E}
+.tc-footer{display:flex;justify-content:space-between;align-items:center;
+  margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
+.tc-price{font-weight:800;color:var(--brand);font-size:.95rem}
+.tc-btn{background:var(--brand);color:#fff;padding:8px 16px;border-radius:10px;
+  font-weight:700;font-size:.85rem;transition:background .2s}
+.tc-btn:hover{background:var(--brand-light)}
+
+/* ============ ESTRELLAS ============ */
+.stars{display:inline-block;position:relative;font-size:.9rem;
+  letter-spacing:1px;line-height:1}
+.stars::before{content:"★★★★★";color:#E5E7EB}
+.stars-fg{position:absolute;top:0;left:0;overflow:hidden;white-space:nowrap;
+  color:var(--accent)}
+.stars-fg::before{content:"★★★★★"}
+.rating-num{font-weight:700;color:var(--text);font-size:.85rem;margin-left:4px}
+
+/* ============ FILTROS ============ */
+.filtros{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;display:flex;flex-wrap:wrap;
+  gap:12px;align-items:center;margin-bottom:16px}
+.filtro-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.filtro-label{font-size:.75rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.05em}
+.chip{padding:7px 13px;border-radius:999px;font-size:.82rem;font-weight:600;
+  border:1px solid var(--border);background:#fff;color:var(--text);
+  cursor:pointer;transition:all .15s}
+.chip:hover{border-color:var(--brand)}
+.chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:.85rem;
+  font-weight:600;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--brand);width:16px;height:16px}
+select.sel{padding:8px 12px;border-radius:8px;border:1px solid var(--border);
+  font-family:inherit;font-size:.85rem;background:#fff;color:var(--text)}
+
+/* ============ PERFIL ============ */
+.perfil-header{background:linear-gradient(135deg,var(--brand),var(--brand-light));
+  color:#fff;border-radius:var(--radius);padding:28px;display:flex;
+  gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:24px}
+.perfil-avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;
+  border:4px solid rgba(255,255,255,.3)}
+.perfil-info{flex:1;min-width:240px}
+.perfil-info h1{font-size:1.6rem;font-weight:900;margin-bottom:4px}
+.perfil-info .role{font-size:1rem;opacity:.92;margin-bottom:10px}
+.perfil-stats{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px}
+.stat{text-align:center}
+.stat .num{font-size:1.35rem;font-weight:900;line-height:1}
+.stat .label{font-size:.72rem;opacity:.85;margin-top:4px;
+  text-transform:uppercase;letter-spacing:.05em}
+.btn-contacto{background:#fff;color:var(--brand);padding:14px 24px;
+  border-radius:12px;font-weight:800;font-size:1rem;
+  display:inline-flex;align-items:center;gap:8px;transition:transform .15s}
+.btn-contacto:hover{transform:scale(1.02)}
+.perfil-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+@media (max-width:768px){.perfil-grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card h2{font-size:1.1rem;color:var(--brand);margin-bottom:12px;font-weight:800}
+.resena{padding:12px 0;border-bottom:1px solid var(--border)}
+.resena:last-child{border-bottom:none}
+.resena-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:4px}
+.resena-autor{font-weight:700;font-size:.9rem}
+.resena-fecha{font-size:.75rem;color:var(--muted)}
+.resena-texto{font-size:.9rem;color:var(--text);margin-top:6px}
+.trabajo-item{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--border);gap:8px}
+.trabajo-item:last-child{border-bottom:none}
+.trabajo-titulo{font-size:.9rem;font-weight:600}
+.trabajo-fecha{font-size:.75rem;color:var(--muted)}
+.certificacion{display:inline-flex;align-items:center;gap:6px;
+  background:#EFF4FA;color:var(--brand);padding:6px 12px;border-radius:8px;
+  font-size:.8rem;font-weight:700;margin:4px 4px 4px 0}
+
+/* ============ AUTH ============ */
+.auth-wrap{max-width:440px;margin:40px auto}
+.auth-card{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:32px;box-shadow:var(--shadow-md)}
+.auth-card h1{font-size:1.6rem;color:var(--brand);margin-bottom:6px;font-weight:900}
+.auth-card p.sub{font-size:.9rem;color:var(--muted);margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.85rem;font-weight:700;
+  color:var(--brand);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;
+  border-radius:10px;border:1px solid var(--border);font-size:.95rem;
+  font-family:inherit;background:#fff;color:var(--text);transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(13,59,102,.1)}
+.btn-primary{width:100%;background:var(--brand);color:#fff;padding:14px;
+  border-radius:12px;font-weight:800;font-size:1rem;transition:background .15s;margin-top:8px}
+.btn-primary:hover{background:var(--brand-light)}
+.btn-secondary{width:100%;background:transparent;color:var(--brand);
+  padding:14px;border-radius:12px;font-weight:700;font-size:.95rem;
+  border:1px solid var(--border);margin-top:8px;display:block;text-align:center}
+.auth-switch{text-align:center;font-size:.9rem;color:var(--muted);margin-top:20px}
+.auth-switch a{color:var(--brand);font-weight:700}
+.demo-note{margin-top:16px;font-size:.75rem;color:var(--muted);text-align:center}
+
+/* ============ PANEL ============ */
+.panel-header{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;display:flex;gap:16px;
+  align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.panel-header .avatar{width:64px;height:64px;border-radius:50%;
+  background:var(--brand);color:#fff;display:grid;place-items:center;
+  font-weight:900;font-size:1.4rem;flex-shrink:0}
+.panel-header h1{font-size:1.3rem;color:var(--brand);font-weight:800}
+.panel-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:12px;margin-bottom:20px}
+.panel-stat{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;text-align:center}
+.panel-stat .num{font-size:1.6rem;font-weight:900;color:var(--brand)}
+.panel-stat .label{font-size:.72rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+
+/* ============ VACÍO ============ */
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty .emoji{font-size:3rem;margin-bottom:12px}
+
+/* ============ FOOTER ============ */
+footer{background:var(--brand-dark);color:#fff;padding:32px 20px;
+  margin-top:48px;text-align:center}
+footer .foot-inner{max-width:1200px;margin:0 auto}
+footer p{font-size:.85rem;opacity:.8;margin-top:8px}
+footer .foot-logo{font-weight:900;font-size:1.1rem;
+  display:inline-flex;align-items:center;gap:8px}
+footer .foot-mark{width:28px;height:28px;background:#fff;color:var(--brand);
+  border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:.9rem}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:600px){
+  .logo span:last-child{display:none}
+  .nav-links a:not(.nav-cta):not(.nav-user){display:none}
+  .hero{padding:40px 16px 32px}
+  .search-bar{flex-direction:column}
+  .search-bar button{width:100%}
+  .perfil-header{padding:20px}
+  .perfil-avatar{width:72px;height:72px}
+}
+</style>
 </head>
 <body>
-  <h1>TrabajoConfiable</h1>
-  <p>Oficios verificados. Gente que responde.</p>
-  <span class="badge">Próximamente: registro, perfil y mapa</span>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js', { scope: './' })
-        .then(() => console.log('Service Worker registrado'))
-        .catch(err => console.error('Error SW:', err));
-    }
-  </script>
+<header>
+  <nav class="nav">
+    <a href="#/" class="logo">
+      <span class="logo-mark">TC</span>
+      <span>TrabajoConfiable</span>
+    </a>
+    <div class="nav-links" id="navLinks"></div>
+  </nav>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-logo"><span class="foot-mark">TC</span> TrabajoConfiable</div>
+    <p>Oficios verificados. Gente que responde.</p>
+    <p>© 2026 TrabajoConfiable · Venezuela</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   DATOS MOCK  (se reemplazarán por Supabase más adelante)
+   ============================================================ */
+const OFICIOS = [
+  { id:'todos',        nombre:'Todos',                  emoji:'🏷️' },
+  { id:'mecanico',     nombre:'Mecánico',               emoji:'🔧' },
+  { id:'electricista', nombre:'Electricista',           emoji:'⚡' },
+  { id:'plomero',      nombre:'Plomero',                emoji:'🚰' },
+  { id:'aire',         nombre:'Aire Acondicionado',     emoji:'❄️' },
+  { id:'tecnico',      nombre:'Técnico de Reparación',  emoji:'🔌' },
+  { id:'obrero',       nombre:'Obrero',                 emoji:'🔨' }
+];
+
+const TRABAJADORES = [
+  {
+    id:1, nombre:"Carlos Pérez", oficio:"mecanico",
+    especialidad:"Mecánica general y frenos",
+    foto:"https://i.pravatar.cc/200?img=12",
+    rating:4.8, totalReviews:47, distanciaKm:1.2, disponible:true,
+    trabajaEnTaller:true, nombreTaller:"Taller Los Andes", verificado:true,
+    zona:"San Cristóbal, Táchira", aniosExperiencia:15, precioHora:8,
+    descripcion:"Mecánico automotriz con 15 años de experiencia en vehículos livianos. Especialista en sistemas de frenos y suspensión. Trabajo garantizado y repuestos originales.",
+    certificaciones:["SENCAMER","Bosch Service","Primeros Auxilios"],
+    trabajosRealizados:[
+      { titulo:"Cambio de pastillas y discos de freno", fecha:"Sep 2024", rating:5 },
+      { titulo:"Reparación de suspensión delantera",   fecha:"Ago 2024", rating:5 },
+      { titulo:"Alineación y balanceo",                 fecha:"Jul 2024", rating:4 }
+    ],
+    resenas:[
+      { autor:"María G.", rating:5, texto:"Excelente trabajo, muy profesional y puntual.", fecha:"Hace 1 semana" },
+      { autor:"José R.",  rating:5, texto:"Dejó mi carro como nuevo. Totalmente recomendado.", fecha:"Hace 2 semanas" },
+      { autor:"Ana P.",   rating:4, texto:"Buen trabajo, aunque tardó un poco más de lo previsto.", fecha:"Hace 1 mes" }
+    ],
+    telefono:"+58 412-1234567"
+  },
+  {
+    id:2, nombre:"Luis Ramírez", oficio:"electricista",
+    especialidad:"Instalaciones residenciales",
+    foto:"https://i.pravatar.cc/200?img=33",
+    rating:4.9, totalReviews:62, distanciaKm:2.5, disponible:true,
+    trabajaEnTaller:false, verificado:true,
+    zona:"Mérida, Mérida", aniosExperiencia:10, precioHora:10,
+    descripcion:"Electricista certificado con 10 años de experiencia. Instalaciones residenciales, comerciales, tableros eléctricos y sistemas de respaldo.",
+    certificaciones:["CODELECTRA","OSHA 30h"],
+    trabajosRealizados:[
+      { titulo:"Instalación de tablero eléctrico", fecha:"Sep 2024", rating:5 },
+      { titulo:"Cableado de vivienda completa",     fecha:"Jun 2024", rating:5 }
+    ],
+    resenas:[
+      { autor:"Pedro V.", rating:5, texto:"Rápido, limpio y muy profesional.", fecha:"Hace 3 días" },
+      { autor:"Carla M.", rating:5, texto:"Solucionó un problema que otros no pudieron.", fecha:"Hace 1 mes" }
+    ],
+    telefono:"+58 414-9876543"
+  },
+  {
+    id:3, nombre:"María González", oficio:"plomero",
+    especialidad:"Plomería y gasfitería",
+    foto:"https://i.pravatar.cc/200?img=47",
+    rating:4.7, totalReviews:38, distanciaKm:3.1, disponible:false,
+    trabajaEnTaller:false, verificado:true,
+    zona:"San Cristóbal, Táchira", aniosExperiencia:8, precioHora:9,
+    descripcion:"Plomera profesional especializada en detección de fugas, instalación de gasfitería y mantenimiento de sistemas hidráulicos.",
+    certificaciones:["SENCAMER","Gasfitería Certificada"],
+    trabajosRealizados:[
+      { titulo:"Reparación de fuga en baño", fecha:"Sep 2024", rating:5 },
+      { titulo:"Instalación de calentador",  fecha:"Ago 2024", rating:4 }
+    ],
+    resenas:[
+      { autor:"Familia Rojas", rating:5, texto:"Muy profesional, dejó todo limpio.", fecha:"Hace 2 semanas" }
+    ],
+    telefono:"+58 416-5551212"
+  },
+  {
+    id:4, nombre:"Andrés Molina", oficio:"aire",
+    especialidad:"Aires acondicionados split",
+    foto:"https://i.pravatar.cc/200?img=15",
+    rating:4.6, totalReviews:29, distanciaKm:5.8, disponible:true,
+    trabajaEnTaller:true, nombreTaller:"Clima Total C.A.", verificado:true,
+    zona:"San Cristóbal, Táchira", aniosExperiencia:7, precioHora:12,
+    descripcion:"Especialista en instalación, mantenimiento y reparación de aires acondicionados tipo split y ventana.",
+    certificaciones:["Frigorista Certificado"],
+    trabajosRealizados:[
+      { titulo:"Mantenimiento de 3 equipos split", fecha:"Sep 2024", rating:5 }
+    ],
+    resenas:[
+      { autor:"Oficina Centro", rating:5, texto:"Rápido y eficiente.", fecha:"Hace 1 semana" }
+    ],
+    telefono:"+58 424-7778899"
+  },
+  {
+    id:5, nombre:"Jesús Contreras", oficio:"tecnico",
+    especialidad:"Reparación de electrodomésticos",
+    foto:"https://i.pravatar.cc/200?img=51",
+    rating:4.5, totalReviews:21, distanciaKm:4.2, disponible:true,
+    trabajaEnTaller:true, nombreTaller:"TecniFix", verificado:false,
+    zona:"Ejido, Mérida", aniosExperiencia:6, precioHora:7,
+    descripcion:"Reparación de neveras, lavadoras, secadoras y microondas. Servicio a domicilio y en taller.",
+    certificaciones:["Técnico en Refrigeración"],
+    trabajosRealizados:[
+      { titulo:"Reparación de lavadora Whirlpool", fecha:"Sep 2024", rating:4 }
+    ],
+    resenas:[
+      { autor:"Rosa D.", rating:4, texto:"Buen servicio, precio justo.", fecha:"Hace 2 semanas" }
+    ],
+    telefono:"+58 412-3334455"
+  },
+  {
+    id:6, nombre:"Pedro Sánchez", oficio:"obrero",
+    especialidad:"Albañilería y remodelación",
+    foto:"https://i.pravatar.cc/200?img=68",
+    rating:4.9, totalReviews:54, distanciaKm:2.0, disponible:true,
+    trabajaEnTaller:false, verificado:true,
+    zona:"San Cristóbal, Táchira", aniosExperiencia:20, precioHora:6,
+    descripcion:"Maestro de obra con 20 años de experiencia en construcción, remodelación, friso, cerámica y pintura.",
+    certificaciones:["Maestro de Obra"],
+    trabajosRealizados:[
+      { titulo:"Remodelación de cocina", fecha:"Sep 2024", rating:5 },
+      { titulo:"Friso y pintura de sala", fecha:"Ago 2024", rating:5 }
+    ],
+    resenas:[
+      { autor:"Familia Pérez", rating:5, texto:"Trabajo impecable, muy responsable.", fecha:"Hace 5 días" }
+    ],
+    telefono:"+58 416-2221100"
+  }
+];
+
+/* ============================================================
+   SESIÓN
+   ============================================================ */
+function getUsuarioActual(){
+  try{ return JSON.parse(localStorage.getItem('tc_user')||'null'); }catch{ return null; }
+}
+function setUsuarioActual(u){
+  localStorage.setItem('tc_user', JSON.stringify(u));
+  renderNav();
+}
+function cerrarSesion(){
+  localStorage.removeItem('tc_user');
+  location.hash = '#/';
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function estrellas(r){
+  const pct = Math.max(0, Math.min(100, (r/5)*100));
+  return `<span class="stars"><span class="stars-fg" style="width:${pct}%"></span></span>`;
+}
+function getOficio(id){ return OFICIOS.find(o=>o.id===id) || {nombre:id,emoji:'🛠️'}; }
+function oficioNombre(id){ return getOficio(id).nombre; }
+function buscarTrabajador(id){ return TRABAJADORES.find(t=>t.id===Number(id)); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+function renderNav(){
+  const u = getUsuarioActual();
+  const el = document.getElementById('navLinks');
+  if(u){
+    el.innerHTML = `
+      <a href="#/buscar">Buscar</a>
+      <a href="#/panel" class="nav-user">Mi panel</a>
+      <button onclick="cerrarSesion()">Salir</button>`;
+  } else {
+    el.innerHTML = `
+      <a href="#/buscar">Buscar</a>
+      <a href="#/login" class="nav-user">Ingresar</a>
+      <a href="#/registro" class="nav-cta">Ofrecer servicios</a>`;
+  }
+}
+
+/* ============================================================
+   COMPONENTE: TARJETA TRABAJADOR
+   ============================================================ */
+function cardTrabajador(t){
+  const oficio = oficioNombre(t.oficio);
+  const inicial = esc(t.nombre.charAt(0));
+  const fallback = `this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%230D3B66%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2260%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-weight=%22900%22>${inicial}</text></svg>'`;
+  const disp  = t.disponible ? '<span class="badge badge-green">● Disponible</span>' : '<span class="badge badge-red">● Ocupado</span>';
+  const taller= t.trabajaEnTaller ? `<span class="badge">🏪 ${esc(t.nombreTaller||'Trabaja en taller')}</span>` : '<span class="badge">🚶 A domicilio</span>';
+  const verif = t.verificado ? '<span class="badge badge-gold">✔ Verificado</span>' : '';
+
+  return `
+    <article class="trabajador-card">
+      <div class="tc-head">
+        <img class="tc-avatar" src="${t.foto}" alt="${esc(t.nombre)}" onerror="${fallback}">
+        <div class="tc-info">
+          <div class="tc-name">${esc(t.nombre)} ${t.verificado?'<span class="tc-verified" title="Verificado">✔</span>':''}</div>
+          <div class="tc-role">${oficio} · ${esc(t.especialidad)}</div>
+          <div class="tc-meta">
+            <span>${estrellas(t.rating)} <b class="rating-num">${t.rating}</b> <small>(${t.totalReviews})</small></span>
+            <span>📍 ${t.distanciaKm} km</span>
+          </div>
+        </div>
+      </div>
+      <div class="tc-badges">${disp}${taller}${verif}</div>
+      <div class="tc-footer">
+        <span class="tc-price">$${t.precioHora}/hora</span>
+        <a class="tc-btn" href="#/perfil/${t.id}">Ver perfil</a>
+      </div>
+    </article>`;
+}
+
+/* ============================================================
+   VISTA: HOME
+   ============================================================ */
+function viewHome(){
+  const destacados = TRABAJADORES.filter(t=>t.verificado).sort((a,b)=>b.rating-a.rating).slice(0,3);
+  return `
+    <section class="hero">
+      <h1>Encuentra profesionales<br>en los que puedes confiar</h1>
+      <p>Mecánicos, electricistas, plomeros y técnicos verificados, con historial de trabajos y reseñas reales. Cerca de ti, cuando los necesitas.</p>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="¿Qué oficio necesitas? Ej: mecánico, plomero…" aria-label="Buscar oficio">
+        <button onclick="buscarDesdeHome()">Buscar</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">Explora por oficio</h2>
+        <a href="#/buscar" class="section-link">Ver todos →</a>
+      </div>
+      <div class="categorias">
+        ${OFICIOS.filter(o=>o.id!=='todos').map(o=>`
+          <a class="categoria" href="#/buscar?oficio=${o.id}">
+            <span class="emoji">${o.emoji}</span>
+            <span class="nombre">${o.nombre}</span>
+          </a>`).join('')}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">Profesionales destacados</h2>
+        <a href="#/buscar" class="section-link">Ver más →</a>
+      </div>
+      <div class="grid-trabajadores">${destacados.map(cardTrabajador).join('')}</div>
+    </section>
+
+    <section class="section" style="text-align:center;padding:40px 20px;background:var(--brand);color:#fff;border-radius:var(--radius);margin-top:8px;">
+      <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:12px;">¿Eres trabajador? Únete gratis</h2>
+      <p style="opacity:.9;max-width:480px;margin:0 auto 20px;">
+        Crea tu perfil verificado, muestra tus trabajos y consigue más clientes en tu zona.
+      </p>
+      <a href="#/registro" class="btn-contacto" style="display:inline-flex;">Crear mi perfil</a>
+    </section>
+  `;
+}
+
+function buscarDesdeHome(){
+  const q = (document.getElementById('searchInput').value||'').trim().toLowerCase();
+  if(!q){ location.hash='#/buscar'; return; }
+  const match = OFICIOS.find(o=>o.id!=='todos' && (o.nombre.toLowerCase().includes(q)||o.id.includes(q)));
+  location.hash = match ? `#/buscar?oficio=${match.id}` : '#/buscar';
+}
+
+/* ============================================================
+   VISTA: BUSCAR
+   ============================================================ */
+function viewBuscar(params){
+  const oficioFiltro    = params.get('oficio') || 'todos';
+  const soloDisponibles = params.get('disponibles') === '1';
+  const soloVerificados = params.get('verificados') === '1';
+  const orden           = params.get('orden') || 'cercania';
+
+  let lista = TRABAJADORES.slice();
+  if(oficioFiltro!=='todos') lista = lista.filter(t=>t.oficio===oficioFiltro);
+  if(soloDisponibles) lista = lista.filter(t=>t.disponible);
+  if(soloVerificados) lista = lista.filter(t=>t.verificado);
+  if(orden==='cercania') lista.sort((a,b)=>a.distanciaKm-b.distanciaKm);
+  if(orden==='rating')   lista.sort((a,b)=>b.rating-a.rating);
+  if(orden==='trabajos') lista.sort((a,b)=>b.totalReviews-a.totalReviews);
+
+  const qs = (extra={}) => {
+    const p = new URLSearchParams();
+    if(oficioFiltro!=='todos') p.set('oficio', oficioFiltro);
+    if(soloDisponibles) p.set('disponibles','1');
+    if(soloVerificados) p.set('verificados','1');
+    if(orden!=='cercania') p.set('orden', orden);
+    Object.entries(extra).forEach(([k,v])=> v==null||v===''||v===false ? p.delete(k) : p.set(k, v===true?'1':v));
+    return p.toString();
+  };
+
+  return `
+    <section class="section">
+      <h1 class="section-title" style="margin-bottom:16px;">Buscar profesionales</h1>
+
+      <div class="filtros">
+        <div class="filtro-group">
+          <span class="filtro-label">Oficio:</span>
+          ${OFICIOS.map(o=>`
+            <a class="chip ${o.id===oficioFiltro?'active':''}"
+               href="#/buscar?${(()=>{const p=new URLSearchParams(); if(o.id!=='todos')p.set('oficio',o.id); if(soloDisponibles)p.set('disponibles','1'); if(soloVerificados)p.set('verificados','1'); if(orden!=='cercania')p.set('orden',orden); return p.toString();})()}">
+              ${o.emoji} ${o.nombre}
+            </a>`).join('')}
+        </div>
+      </div>
+
+      <div class="filtros">
+        <label class="toggle">
+          <input type="checkbox" ${soloDisponibles?'checked':''}
+                 onchange="actualizarFiltro('disponibles', this.checked)">
+          Solo disponibles
+        </label>
+        <label class="toggle">
+          <input type="checkbox" ${soloVerificados?'checked':''}
+                 onchange="actualizarFiltro('verificados', this.checked)">
+          Solo verificados
+        </label>
+        <div class="filtro-group" style="margin-left:auto;">
+          <span class="filtro-label">Ordenar:</span>
+          <select class="sel" onchange="actualizarFiltro('orden', this.value)">
+            <option value="cercania" ${orden==='cercania'?'selected':''}>Más cercanos</option>
+            <option value="rating"   ${orden==='rating'?'selected':''}>Mejor calificados</option>
+            <option value="trabajos" ${orden==='trabajos'?'selected':''}>Más trabajos</option>
+          </select>
+        </div>
+      </div>
+
+      ${lista.length===0
+        ? `<div class="empty"><div class="emoji">🔍</div><p>No encontramos profesionales con esos filtros.<br>Prueba ampliar la búsqueda.</p></div>`
+        : `<div class="grid-trabajadores">${lista.map(cardTrabajador).join('')}</div>`}
+    </section>`;
+}
+
+function actualizarFiltro(key, value){
+  const { path, params } = parseHash();
+  if(value===true || (typeof value==='string' && value && value!=='false')) {
+    params.set(key, value===true ? '1' : value);
+  } else {
+    params.delete(key);
+  }
+  const s = params.toString();
+  location.hash = path + (s?'?'+s:'');
+}
+
+/* ============================================================
+   VISTA: PERFIL
+   ============================================================ */
+function viewPerfil(id){
+  const t = buscarTrabajador(id);
+  if(!t) return `<div class="empty"><div class="emoji">😕</div><p>Profesional no encontrado.</p></div>`;
+  const oficio = oficioNombre(t.oficio);
+  const inicial = esc(t.nombre.charAt(0));
+  const fallback = `this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ffffff%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2260%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%230D3B66%22 font-family=%22sans-serif%22 font-weight=%22900%22>${inicial}</text></svg>'`;
+
+  return `
+    <section style="padding-top:24px;">
+      <a href="#/buscar" style="color:var(--muted);font-size:.9rem;">← Volver</a>
+    </section>
+    <section class="perfil-header">
+      <img class="perfil-avatar" src="${t.foto}" alt="${esc(t.nombre)}" onerror="${fallback}">
+      <div class="perfil-info">
+        <h1>${esc(t.nombre)} ${t.verificado?'✔':''}</h1>
+        <div class="role">${oficio} · ${esc(t.especialidad)}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${t.disponible?'<span class="badge badge-green">● Disponible ahora</span>':'<span class="badge badge-red">● Ocupado</span>'}
+          ${t.trabajaEnTaller?`<span class="badge">🏪 ${esc(t.nombreTaller||'Taller')}</span>`:'<span class="badge">🚶 A domicilio</span>'}
+          <span class="badge">📍 ${t.distanciaKm} km</span>
+        </div>
+        <div class="perfil-stats">
+          <div class="stat"><div class="num">${t.rating}</div><div class="label">Rating</div></div>
+          <div class="stat"><div class="num">${t.totalReviews}</div><div class="label">Reseñas</div></div>
+          <div class="stat"><div class="num">${t.aniosExperiencia}</div><div class="label">Años exp.</div></div>
+          <div class="stat"><div class="num">$${t.precioHora}</div><div class="label">Por hora</div></div>
+        </div>
+      </div>
+      <div>
+        <a class="btn-contacto" href="tel:${t.telefono.replace(/\s/g,'')}">📞 Contactar</a>
+      </div>
+    </section>
+
+    <div class="perfil-grid">
+      <div>
+        <div class="card">
+          <h2>Sobre mí</h2>
+          <p style="color:var(--muted);font-size:.95rem;">${esc(t.descripcion)}</p>
+          <div style="margin-top:16px;">
+            <strong style="font-size:.85rem;color:var(--brand);">Certificaciones:</strong><br>
+            ${t.certificaciones.map(c=>`<span class="certificacion">🏅 ${esc(c)}</span>`).join('')}
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Trabajos recientes (${t.trabajosRealizados.length})</h2>
+          ${t.trabajosRealizados.map(tr=>`
+            <div class="trabajo-item">
+              <div>
+                <div class="trabajo-titulo">${esc(tr.titulo)}</div>
+                <div class="trabajo-fecha">${esc(tr.fecha)}</div>
+              </div>
+              ${estrellas(tr.rating)}
+            </div>`).join('')}
+        </div>
+
+        <div class="card">
+          <h2>Reseñas (${t.totalReviews})</h2>
+          ${t.resenas.map(r=>`
+            <div class="resena">
+              <div class="resena-head">
+                <span class="resena-autor">${esc(r.autor)}</span>
+                <span class="resena-fecha">${esc(r.fecha)}</span>
+              </div>
+              ${estrellas(r.rating)}
+              <p class="resena-texto">${esc(r.texto)}</p>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <aside>
+        <div class="card">
+          <h2>Ubicación</h2>
+          <p style="font-size:.9rem;color:var(--muted);">📍 ${esc(t.zona)}</p>
+          <p style="font-size:.85rem;color:var(--muted);margin-top:6px;">A ${t.distanciaKm} km de tu ubicación aproximada.</p>
+        </div>
+        <div class="card">
+          <h2>Contacto</h2>
+          <p style="font-size:.9rem;color:var(--muted);">${esc(t.telefono)}</p>
+          <a href="tel:${t.telefono.replace(/\s/g,'')}" class="btn-primary" style="display:block;text-align:center;">Llamar ahora</a>
+          <a href="https://wa.me/${t.telefono.replace(/[^0-9]/g,'')}" target="_blank" rel="noopener" class="btn-secondary">WhatsApp</a>
+        </div>
+      </aside>
+    </div>`;
+}
+
+/* ============================================================
+   VISTA: LOGIN
+   ============================================================ */
+function viewLogin(){
+  return `
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <h1>Ingresar</h1>
+        <p class="sub">Accede a tu cuenta de TrabajoConfiable</p>
+        <form onsubmit="handleLogin(event)">
+          <div class="field">
+            <label for="loginEmail">Correo o teléfono</label>
+            <input type="text" id="loginEmail" placeholder="tu@correo.com" required>
+          </div>
+          <div class="field">
+            <label for="loginPass">Contraseña</label>
+            <input type="password" id="loginPass" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-primary">Ingresar</button>
+        </form>
+        <div class="auth-switch">¿No tienes cuenta? <a href="#/registro">Regístrate como profesional</a></div>
+        <div class="demo-note">Demo: cualquier correo y contraseña funcionan. La autenticación real se conectará con Supabase.</div>
+      </div>
+    </div>`;
+}
+
+/* ============================================================
+   VISTA: REGISTRO
+   ============================================================ */
+function viewRegistro(){
+  return `
+    <div class="auth-wrap" style="max-width:560px;">
+      <div class="auth-card">
+        <h1>Ofrecer mis servicios</h1>
+        <p class="sub">Crea tu perfil profesional verificado. Es gratis.</p>
+        <form onsubmit="handleRegistro(event)">
+          <div class="field"><label for="regNombre">Nombre completo</label>
+            <input type="text" id="regNombre" placeholder="Ej: Carlos Pérez" required></div>
+          <div class="field"><label for="regOficio">Oficio principal</label>
+            <select id="regOficio" required>
+              <option value="">Selecciona un oficio</option>
+              ${OFICIOS.filter(o=>o.id!=='todos').map(o=>`<option value="${o.id}">${o.emoji} ${o.nombre}</option>`).join('')}
+            </select></div>
+          <div class="field"><label for="regEspecialidad">Especialidad</label>
+            <input type="text" id="regEspecialidad" placeholder="Ej: Frenos y suspensión" required></div>
+          <div class="field"><label for="regZona">Zona / Ciudad</label>
+            <input type="text" id="regZona" placeholder="Ej: San Cristóbal, Táchira" required></div>
+          <div class="field"><label for="regTelefono">Teléfono (WhatsApp)</label>
+            <input type="tel" id="regTelefono" placeholder="+58 412-1234567" required></div>
+          <div class="field"><label for="regExp">Años de experiencia</label>
+            <input type="number" id="regExp" min="0" max="60" placeholder="Ej: 10" required></div>
+          <div class="field"><label for="regPrecio">Precio por hora (USD)</label>
+            <input type="number" id="regPrecio" min="1" max="200" placeholder="Ej: 8" required></div>
+          <div class="field"><label for="regTaller">¿Trabajas en taller?</label>
+            <select id="regTaller">
+              <option value="no">No, voy a domicilio</option>
+              <option value="si">Sí, trabajo en taller</option>
+            </select></div>
+          <div class="field"><label for="regDesc">Descripción breve</label>
+            <textarea id="regDesc" rows="3" placeholder="Describe tu experiencia y servicios."></textarea></div>
+          <button type="submit" class="btn-primary">Crear mi perfil</button>
+        </form>
+        <div class="auth-switch">¿Ya tienes cuenta? <a href="#/login">Ingresar</a></div>
+      </div>
+    </div>`;
+}
+
+/* ============================================================
+   VISTA: PANEL
+   ============================================================ */
+function viewPanel(){
+  const u = getUsuarioActual();
+  if(!u){ location.hash = '#/login'; return ''; }
+  return `
+    <section class="section">
+      <div class="panel-header">
+        <div class="avatar">${esc(u.nombre.charAt(0))}</div>
+        <div style="flex:1;min-width:200px;">
+          <h1>Hola, ${esc(u.nombre.split(' ')[0])}</h1>
+          <p style="color:var(--muted);font-size:.9rem;">${esc(u.especialidad||'')} · ${esc(u.zona||'')}</p>
+        </div>
+        <span class="badge ${u.verificado?'badge-green':'badge-gold'}">${u.verificado?'✔ Verificado':'⏳ Verificación pendiente'}</span>
+      </div>
+
+      <div class="panel-stats">
+        <div class="panel-stat"><div class="num">0</div><div class="label">Rating</div></div>
+        <div class="panel-stat"><div class="num">0</div><div class="label">Reseñas</div></div>
+        <div class="panel-stat"><div class="num">0</div><div class="label">Trabajos</div></div>
+        <div class="panel-stat"><div class="num">${u.disponible?'Sí':'No'}</div><div class="label">Disponible</div></div>
+      </div>
+
+      <div class="card">
+        <h2>Tu perfil</h2>
+        <p style="font-size:.9rem;color:var(--muted);margin-bottom:12px;">Así te verán los clientes. Pronto podrás editar todos los campos y subir fotos.</p>
+        <div style="font-size:.9rem;line-height:1.9;">
+          <div><b>Oficio:</b> ${esc(oficioNombre(u.oficio))}</div>
+          <div><b>Especialidad:</b> ${esc(u.especialidad||'—')}</div>
+          <div><b>Zona:</b> ${esc(u.zona||'—')}</div>
+          <div><b>Teléfono:</b> ${esc(u.telefono||'—')}</div>
+          <div><b>Experiencia:</b> ${u.aniosExperiencia||0} años</div>
+          <div><b>Precio:</b> $${u.precioHora||0}/hora</div>
+          <div><b>Taller:</b> ${u.trabajaEnTaller?'Sí':'No, a domicilio'}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Trabajos completados</h2>
+        <div class="empty" style="padding:20px;">
+          <div class="emoji" style="font-size:2rem;">📋</div>
+          <p style="font-size:.9rem;">Aún no tienes trabajos registrados.<br>Cuando los clientes te contacten y completes servicios, aparecerán aquí.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Próximos pasos</h2>
+        <ul style="font-size:.9rem;color:var(--muted);line-height:1.9;padding-left:20px;">
+          <li>Sube tu cédula y certificados para obtener la verificación ✔</li>
+          <li>Agrega fotos de trabajos anteriores a tu portafolio</li>
+          <li>Activa tu disponibilidad para recibir clientes</li>
+        </ul>
+      </div>
+    </section>`;
+}
+
+/* ============================================================
+   HANDLERS
+   ============================================================ */
+function handleLogin(e){
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  setUsuarioActual({
+    nombre:'Carlos Pérez', oficio:'mecanico',
+    especialidad:'Mecánica general y frenos',
+    zona:'San Cristóbal, Táchira', telefono:'+58 412-1234567',
+    aniosExperiencia:15, precioHora:8,
+    trabajaEnTaller:true, disponible:true, verificado:true, email
+  });
+  location.hash = '#/panel';
+}
+
+function handleRegistro(e){
+  e.preventDefault();
+  setUsuarioActual({
+    nombre: document.getElementById('regNombre').value,
+    oficio: document.getElementById('regOficio').value,
+    especialidad: document.getElementById('regEspecialidad').value,
+    zona: document.getElementById('regZona').value,
+    telefono: document.getElementById('regTelefono').value,
+    aniosExperiencia: Number(document.getElementById('regExp').value)||0,
+    precioHora: Number(document.getElementById('regPrecio').value)||0,
+    trabajaEnTaller: document.getElementById('regTaller').value==='si',
+    disponible:true, verificado:false,
+    descripcion: document.getElementById('regDesc').value
+  });
+  location.hash = '#/panel';
+}
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+function parseHash(){
+  const hash = location.hash.replace(/^#/, '') || '/';
+  const [path, q] = hash.split('?');
+  return { path, params: new URLSearchParams(q||'') };
+}
+
+function render(){
+  const { path, params } = parseHash();
+  const app = document.getElementById('app');
+  let html = '';
+  if(path==='/'||path==='')      html = viewHome();
+  else if(path==='/buscar')       html = viewBuscar(params);
+  else if(path.startsWith('/perfil/')) html = viewPerfil(path.split('/')[2]);
+  else if(path==='/login')        html = viewLogin();
+  else if(path==='/registro')     html = viewRegistro();
+  else if(path==='/panel')        html = viewPanel();
+  else html = `<div class="empty"><div class="emoji">😕</div><p>Página no encontrada.</p><p style="margin-top:12px;"><a href="#/" style="color:var(--brand);font-weight:700;">Volver al inicio</a></p></div>`;
+  app.innerHTML = `<div class="view">${html}</div>`;
+  renderNav();
+  window.scrollTo(0,0);
+}
+
+window.addEventListener('hashchange', render);
+window.addEventListener('DOMContentLoaded', () => { renderNav(); render(); });
+
+/* ============================================================
+   SERVICE WORKER
+   ============================================================ */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js',{scope:'./'})
+    .then(()=>console.log('Service Worker registrado'))
+    .catch(err=>console.error('Error SW:',err));
+}
+</script>
 </body>
 </html>
