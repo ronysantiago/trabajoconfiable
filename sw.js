@@ -1,4 +1,4 @@
-const CACHE_NAME = 'trabajoconfiable-v1';
+const CACHE_NAME = 'trabajoconfiable-v3';
 const APP_SHELL = [
   './',
   './index.html',
