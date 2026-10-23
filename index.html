@@ -3,24 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>TrabajoConfiable — Oficios verificados. Gente que responde.</title>
-<meta name="description" content="Encuentra mecánicos, electricistas, plomeros y técnicos verificados y de confianza en Venezuela.">
+<title>El Punto Amarillo — Mecánicos, repuestos y lubricantes en un solo punto.</title>
+<meta name="description" content="Encuentra mecánicos verificados, tiendas de repuestos y lubricantes en Venezuela. Todo en un solo mapa.">
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#0D3B66">
+<meta name="theme-color" content="#1A1A1A">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
-<meta property="og:title" content="TrabajoConfiable">
-<meta property="og:description" content="Oficios verificados. Gente que responde.">
+<meta property="og:title" content="El Punto Amarillo">
+<meta property="og:description" content="Mecánicos, repuestos y lubricantes en un solo punto.">
 <meta property="og:image" content="./icons/icon-512.png">
+
+<!-- Leaflet (mapas gratis, sin API key) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <style>
 /* ============ BASE ============ */
 :root{
-  --brand:#0D3B66; --brand-dark:#082844; --brand-light:#1A5490;
-  --accent:#F5A623; --success:#16A34A; --danger:#DC2626;
-  --bg:#F7F9FB; --card:#FFF; --text:#1B1B1B; --muted:#6B7280;
+  --brand:#1A1A1A;          /* negro marca / header / headings */
+  --brand-soft:#2B2B2B;
+  --accent:#FFB800;         /* amarillo del logo / CTAs */
+  --accent-dark:#E5A600;
+  --success:#16A34A; --danger:#DC2626;
+  --bg:#F5F5F7; --card:#FFF; --text:#1B1B1B; --muted:#6B7280;
   --border:#E5E7EB; --radius:14px;
-  --shadow-sm:0 1px 2px rgba(13,59,102,.06);
-  --shadow-md:0 4px 16px rgba(13,59,102,.08);
-  --shadow-lg:0 12px 40px rgba(13,59,102,.12);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.14);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -32,18 +39,19 @@ img{max-width:100%;display:block}
 
 /* ============ HEADER ============ */
 header{background:var(--brand);color:#fff;padding:12px 20px;
-  position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm)}
+  position:sticky;top:0;z-index:1000;box-shadow:var(--shadow-sm)}
 .nav{max-width:1200px;margin:0 auto;display:flex;align-items:center;
   justify-content:space-between;gap:16px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;color:#fff}
-.logo-mark{width:36px;height:36px;background:#fff;color:var(--brand);
-  border-radius:10px;display:grid;place-items:center;font-weight:900}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;color:#fff}
+.logo-mark{width:36px;height:36px;background:var(--accent);color:var(--brand);
+  border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:.9rem;
+  box-shadow:0 0 0 3px rgba(255,184,0,.25)}
 .nav-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .nav-links a,.nav-links button{color:#fff;font-size:.88rem;font-weight:600;
   padding:8px 14px;border-radius:10px;transition:background .2s}
 .nav-links a:hover,.nav-links button:hover{background:rgba(255,255,255,.12)}
-.nav-cta{background:#fff !important;color:var(--brand) !important}
-.nav-cta:hover{background:#f0f4f8 !important}
+.nav-cta{background:var(--accent) !important;color:var(--brand) !important}
+.nav-cta:hover{background:var(--accent-dark) !important}
 
 /* ============ LAYOUT ============ */
 main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:0 20px}
@@ -51,37 +59,45 @@ main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:0 20px}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* ============ HERO ============ */
-.hero{padding:64px 20px 48px;text-align:center;
-  background:linear-gradient(180deg,rgba(13,59,102,.05),transparent)}
+.hero{padding:56px 20px 32px;text-align:center}
 .hero h1{font-size:clamp(2rem,5vw,3rem);color:var(--brand);font-weight:900;
   letter-spacing:-.02em;line-height:1.15;margin-bottom:16px}
+.hero h1 .dot{display:inline-block;width:.55em;height:.55em;background:var(--accent);
+  border-radius:50%;vertical-align:middle;margin:0 .08em;transform:translateY(-.05em)}
 .hero p{font-size:clamp(1rem,2.2vw,1.15rem);color:var(--muted);
-  max-width:640px;margin:0 auto 32px}
+  max-width:640px;margin:0 auto 28px}
 .search-bar{max-width:640px;margin:0 auto;display:flex;gap:8px;background:#fff;
   padding:8px;border-radius:16px;box-shadow:var(--shadow-md)}
 .search-bar input{flex:1;border:none;outline:none;padding:12px 16px;
   font-size:1rem;background:transparent;color:var(--text)}
-.search-bar button{background:var(--brand);color:#fff;padding:12px 24px;
-  border-radius:12px;font-weight:700;transition:background .2s}
-.search-bar button:hover{background:var(--brand-light)}
+.search-bar button{background:var(--accent);color:var(--brand);padding:12px 24px;
+  border-radius:12px;font-weight:800;transition:background .2s}
+.search-bar button:hover{background:var(--accent-dark)}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);
+  padding:10px 18px;border-radius:10px;font-weight:700;font-size:.9rem;
+  display:inline-flex;align-items:center;gap:6px;transition:border-color .15s}
+.btn-outline:hover{border-color:var(--brand)}
 
 /* ============ SECCIONES ============ */
 .section{padding:32px 0}
 .section-head{display:flex;align-items:center;justify-content:space-between;
   margin-bottom:20px;gap:12px;flex-wrap:wrap}
 .section-title{font-size:1.4rem;font-weight:800;color:var(--brand)}
-.section-link{color:var(--brand);font-weight:600;font-size:.9rem}
+.section-link{color:var(--brand);font-weight:700;font-size:.9rem}
 
 /* ============ CATEGORÍAS ============ */
-.categorias{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.categorias{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
 .categoria{background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:20px 12px;text-align:center;
+  border-radius:var(--radius);padding:24px 16px;text-align:center;
   cursor:pointer;transition:all .2s}
-.categoria:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--brand)}
-.categoria .emoji{font-size:2rem;display:block;margin-bottom:8px}
-.categoria .nombre{font-size:.85rem;font-weight:700;color:var(--brand)}
+.categoria:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);
+  border-color:var(--accent)}
+.categoria .emoji{font-size:2.4rem;display:block;margin-bottom:10px}
+.categoria .nombre{font-size:.98rem;font-weight:800;color:var(--brand)}
+.categoria .desc{font-size:.78rem;color:var(--muted);margin-top:4px}
 
-/* ============ TARJETA TRABAJADOR ============ */
+/* ============ TARJETA ============ */
 .grid-trabajadores{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .trabajador-card{background:var(--card);border:1px solid var(--border);
   border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;
@@ -93,23 +109,24 @@ main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:0 20px}
 .tc-info{flex:1;min-width:0}
 .tc-name{font-weight:800;font-size:1.02rem;color:var(--brand);
   display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.tc-verified{color:var(--brand-light);font-size:.9rem}
+.tc-verified{color:var(--success);font-size:.9rem}
 .tc-role{font-size:.85rem;color:var(--muted);margin-top:2px}
 .tc-meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.8rem;
   color:var(--muted);margin-top:8px}
 .tc-meta span{display:flex;align-items:center;gap:4px}
 .tc-badges{display:flex;flex-wrap:wrap;gap:6px}
 .badge{font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;
-  background:#EFF4FA;color:var(--brand)}
+  background:#F3F4F6;color:var(--brand)}
 .badge-green{background:#DCFCE7;color:#166534}
 .badge-red{background:#FEE2E2;color:#991B1B}
 .badge-gold{background:#FEF3C7;color:#92400E}
+.badge-yellow{background:var(--accent);color:var(--brand)}
 .tc-footer{display:flex;justify-content:space-between;align-items:center;
   margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
 .tc-price{font-weight:800;color:var(--brand);font-size:.95rem}
-.tc-btn{background:var(--brand);color:#fff;padding:8px 16px;border-radius:10px;
-  font-weight:700;font-size:.85rem;transition:background .2s}
-.tc-btn:hover{background:var(--brand-light)}
+.tc-btn{background:var(--accent);color:var(--brand);padding:8px 16px;border-radius:10px;
+  font-weight:800;font-size:.85rem;transition:background .2s}
+.tc-btn:hover{background:var(--accent-dark)}
 
 /* ============ ESTRELLAS ============ */
 .stars{display:inline-block;position:relative;font-size:.9rem;
@@ -130,30 +147,46 @@ main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:0 20px}
 .chip{padding:7px 13px;border-radius:999px;font-size:.82rem;font-weight:600;
   border:1px solid var(--border);background:#fff;color:var(--text);
   cursor:pointer;transition:all .15s}
-.chip:hover{border-color:var(--brand)}
-.chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.chip:hover{border-color:var(--accent)}
+.chip.active{background:var(--accent);color:var(--brand);border-color:var(--accent)}
 .toggle{display:flex;align-items:center;gap:8px;font-size:.85rem;
   font-weight:600;cursor:pointer;user-select:none}
-.toggle input{accent-color:var(--brand);width:16px;height:16px}
+.toggle input{accent-color:var(--accent);width:16px;height:16px}
 select.sel{padding:8px 12px;border-radius:8px;border:1px solid var(--border);
   font-family:inherit;font-size:.85rem;background:#fff;color:var(--text)}
 
+/* ============ MAPA ============ */
+.mapa-full{height:70vh;min-height:420px;border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--border)}
+.mapa-preview{height:340px;border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-md);border:1px solid var(--border)}
+.mapa-mini{height:260px;border-radius:12px;overflow:hidden;
+  border:1px solid var(--border);margin-top:8px}
+.marker-pin{display:grid;place-items:center;font-size:20px;
+  width:40px;height:40px;border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);border:3px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.marker-pin > span{transform:rotate(45deg)}
+.marker-mecanico{background:var(--accent)}
+.marker-repuestos{background:#2563EB}
+.marker-lubricantes{background:#16A34A}
+
 /* ============ PERFIL ============ */
-.perfil-header{background:linear-gradient(135deg,var(--brand),var(--brand-light));
+.perfil-header{background:linear-gradient(135deg,var(--brand),var(--brand-soft));
   color:#fff;border-radius:var(--radius);padding:28px;display:flex;
   gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:24px}
 .perfil-avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;
-  border:4px solid rgba(255,255,255,.3)}
+  border:4px solid var(--accent)}
 .perfil-info{flex:1;min-width:240px}
 .perfil-info h1{font-size:1.6rem;font-weight:900;margin-bottom:4px}
 .perfil-info .role{font-size:1rem;opacity:.92;margin-bottom:10px}
 .perfil-stats{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px}
 .stat{text-align:center}
-.stat .num{font-size:1.35rem;font-weight:900;line-height:1}
+.stat .num{font-size:1.35rem;font-weight:900;line-height:1;color:var(--accent)}
 .stat .label{font-size:.72rem;opacity:.85;margin-top:4px;
   text-transform:uppercase;letter-spacing:.05em}
-.btn-contacto{background:#fff;color:var(--brand);padding:14px 24px;
-  border-radius:12px;font-weight:800;font-size:1rem;
+.btn-contacto{background:var(--accent);color:var(--brand);padding:14px 24px;
+  border-radius:12px;font-weight:900;font-size:1rem;
   display:inline-flex;align-items:center;gap:8px;transition:transform .15s}
 .btn-contacto:hover{transform:scale(1.02)}
 .perfil-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}
@@ -173,7 +206,7 @@ select.sel{padding:8px 12px;border-radius:8px;border:1px solid var(--border);
 .trabajo-titulo{font-size:.9rem;font-weight:600}
 .trabajo-fecha{font-size:.75rem;color:var(--muted)}
 .certificacion{display:inline-flex;align-items:center;gap:6px;
-  background:#EFF4FA;color:var(--brand);padding:6px 12px;border-radius:8px;
+  background:#FEF3C7;color:#92400E;padding:6px 12px;border-radius:8px;
   font-size:.8rem;font-weight:700;margin:4px 4px 4px 0}
 
 /* ============ AUTH ============ */
@@ -189,15 +222,15 @@ select.sel{padding:8px 12px;border-radius:8px;border:1px solid var(--border);
   border-radius:10px;border:1px solid var(--border);font-size:.95rem;
   font-family:inherit;background:#fff;color:var(--text);transition:border-color .15s}
 .field input:focus,.field select:focus,.field textarea:focus{
-  outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(13,59,102,.1)}
-.btn-primary{width:100%;background:var(--brand);color:#fff;padding:14px;
+  outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,184,0,.2)}
+.btn-primary{width:100%;background:var(--accent);color:var(--brand);padding:14px;
   border-radius:12px;font-weight:800;font-size:1rem;transition:background .15s;margin-top:8px}
-.btn-primary:hover{background:var(--brand-light)}
+.btn-primary:hover{background:var(--accent-dark)}
 .btn-secondary{width:100%;background:transparent;color:var(--brand);
   padding:14px;border-radius:12px;font-weight:700;font-size:.95rem;
   border:1px solid var(--border);margin-top:8px;display:block;text-align:center}
 .auth-switch{text-align:center;font-size:.9rem;color:var(--muted);margin-top:20px}
-.auth-switch a{color:var(--brand);font-weight:700}
+.auth-switch a{color:var(--brand);font-weight:700;text-decoration:underline}
 .demo-note{margin-top:16px;font-size:.75rem;color:var(--muted);text-align:center}
 
 /* ============ PANEL ============ */
@@ -205,7 +238,7 @@ select.sel{padding:8px 12px;border-radius:8px;border:1px solid var(--border);
   border-radius:var(--radius);padding:20px;display:flex;gap:16px;
   align-items:center;flex-wrap:wrap;margin-bottom:20px}
 .panel-header .avatar{width:64px;height:64px;border-radius:50%;
-  background:var(--brand);color:#fff;display:grid;place-items:center;
+  background:var(--accent);color:var(--brand);display:grid;place-items:center;
   font-weight:900;font-size:1.4rem;flex-shrink:0}
 .panel-header h1{font-size:1.3rem;color:var(--brand);font-weight:800}
 .panel-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
@@ -216,29 +249,68 @@ select.sel{padding:8px 12px;border-radius:8px;border:1px solid var(--border);
 .panel-stat .label{font-size:.72rem;color:var(--muted);
   text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
 
+/* ============ CHAT ============ */
+.chat-wrap{max-width:720px;margin:20px auto;display:flex;flex-direction:column;
+  min-height:calc(100vh - 220px)}
+.chat-lista{display:flex;flex-direction:column;gap:8px}
+.chat-item{display:flex;gap:12px;align-items:center;background:var(--card);
+  border:1px solid var(--border);border-radius:12px;padding:14px;transition:all .15s}
+.chat-item:hover{border-color:var(--accent);box-shadow:var(--shadow-sm)}
+.chat-item img{width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.chat-item-info{flex:1;min-width:0}
+.chat-item-nombre{font-weight:800;color:var(--brand);font-size:.95rem}
+.chat-item-ultimo{font-size:.82rem;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.chat-conv{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden;
+  height:calc(100vh - 220px);min-height:420px}
+.chat-conv-header{display:flex;align-items:center;gap:12px;
+  padding:14px 18px;border-bottom:1px solid var(--border);background:#FAFAFA}
+.chat-conv-header img{width:42px;height:42px;border-radius:50%;object-fit:cover}
+.chat-conv-header .info{flex:1;min-width:0}
+.chat-conv-header .nombre{font-weight:800;color:var(--brand);font-size:.98rem}
+.chat-conv-header .rol{font-size:.78rem;color:var(--muted)}
+.chat-msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}
+.msg{max-width:78%;padding:10px 14px;border-radius:16px;font-size:.9rem;
+  line-height:1.4;word-wrap:break-word;position:relative}
+.msg-yo{align-self:flex-end;background:var(--accent);color:var(--brand);
+  border-bottom-right-radius:4px}
+.msg-ellos{align-self:flex-start;background:#fff;color:var(--text);
+  border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg-hora{font-size:.65rem;opacity:.6;margin-top:4px;display:block;text-align:right}
+.chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:#fff}
+.chat-input input{flex:1;padding:12px 14px;border-radius:24px;
+  border:1px solid var(--border);font-size:.95rem;font-family:inherit;outline:none}
+.chat-input input:focus{border-color:var(--accent)}
+.chat-input button{background:var(--accent);color:var(--brand);
+  width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  font-size:1.2rem;transition:background .15s}
+.chat-input button:hover{background:var(--accent-dark)}
+
 /* ============ VACÍO ============ */
 .empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .empty .emoji{font-size:3rem;margin-bottom:12px}
 
 /* ============ FOOTER ============ */
-footer{background:var(--brand-dark);color:#fff;padding:32px 20px;
+footer{background:var(--brand);color:#fff;padding:32px 20px;
   margin-top:48px;text-align:center}
 footer .foot-inner{max-width:1200px;margin:0 auto}
 footer p{font-size:.85rem;opacity:.8;margin-top:8px}
 footer .foot-logo{font-weight:900;font-size:1.1rem;
   display:inline-flex;align-items:center;gap:8px}
-footer .foot-mark{width:28px;height:28px;background:#fff;color:var(--brand);
-  border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:.9rem}
+footer .foot-mark{width:28px;height:28px;background:var(--accent);color:var(--brand);
+  border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:.8rem}
 
 /* ============ RESPONSIVE ============ */
 @media (max-width:600px){
   .logo span:last-child{display:none}
   .nav-links a:not(.nav-cta):not(.nav-user){display:none}
-  .hero{padding:40px 16px 32px}
+  .hero{padding:36px 16px 24px}
   .search-bar{flex-direction:column}
   .search-bar button{width:100%}
   .perfil-header{padding:20px}
   .perfil-avatar{width:72px;height:72px}
+  .mapa-full{height:60vh}
 }
 </style>
 </head>
@@ -247,8 +319,8 @@ footer .foot-mark{width:28px;height:28px;background:#fff;color:var(--brand);
 <header>
   <nav class="nav">
     <a href="#/" class="logo">
-      <span class="logo-mark">TC</span>
-      <span>TrabajoConfiable</span>
+      <span class="logo-mark">PA</span>
+      <span>El Punto Amarillo</span>
     </a>
     <div class="nav-links" id="navLinks"></div>
   </nav>
@@ -258,136 +330,154 @@ footer .foot-mark{width:28px;height:28px;background:#fff;color:var(--brand);
 
 <footer>
   <div class="foot-inner">
-    <div class="foot-logo"><span class="foot-mark">TC</span> TrabajoConfiable</div>
-    <p>Oficios verificados. Gente que responde.</p>
-    <p>© 2026 TrabajoConfiable · Venezuela</p>
+    <div class="foot-logo"><span class="foot-mark">PA</span> El Punto Amarillo</div>
+    <p>Mecánicos, repuestos y lubricantes en un solo punto.</p>
+    <p>© 2026 El Punto Amarillo · Venezuela</p>
   </div>
 </footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ============================================================
-   DATOS MOCK  (se reemplazarán por Supabase más adelante)
+   DATOS MOCK  (se reemplazarán por Supabase)
    ============================================================ */
-const OFICIOS = [
-  { id:'todos',        nombre:'Todos',                  emoji:'🏷️' },
-  { id:'mecanico',     nombre:'Mecánico',               emoji:'🔧' },
-  { id:'electricista', nombre:'Electricista',           emoji:'⚡' },
-  { id:'plomero',      nombre:'Plomero',                emoji:'🚰' },
-  { id:'aire',         nombre:'Aire Acondicionado',     emoji:'❄️' },
-  { id:'tecnico',      nombre:'Técnico de Reparación',  emoji:'🔌' },
-  { id:'obrero',       nombre:'Obrero',                 emoji:'🔨' }
+const TIPOS = [
+  { id:'todos',       nombre:'Todos',       emoji:'📍' },
+  { id:'mecanico',    nombre:'Mecánicos',   emoji:'🔧' },
+  { id:'repuestos',   nombre:'Repuestos',   emoji:'⚙️' },
+  { id:'lubricantes', nombre:'Lubricantes', emoji:'🛢️' }
 ];
 
-const TRABAJADORES = [
+const PERFILES = [
   {
-    id:1, nombre:"Carlos Pérez", oficio:"mecanico",
+    id:1, tipo:"mecanico", nombre:"Carlos Pérez",
     especialidad:"Mecánica general y frenos",
     foto:"https://i.pravatar.cc/200?img=12",
-    rating:4.8, totalReviews:47, distanciaKm:1.2, disponible:true,
-    trabajaEnTaller:true, nombreTaller:"Taller Los Andes", verificado:true,
-    zona:"San Cristóbal, Táchira", aniosExperiencia:15, precioHora:8,
+    rating:4.8, totalReviews:47, lat:7.7667, lng:-72.2167,
+    direccion:"Av. Ferrero Tamayo, San Cristóbal, Táchira",
+    disponible:true, verificado:true,
+    aniosExperiencia:15, precioHora:8,
     descripcion:"Mecánico automotriz con 15 años de experiencia en vehículos livianos. Especialista en sistemas de frenos y suspensión. Trabajo garantizado y repuestos originales.",
     certificaciones:["SENCAMER","Bosch Service","Primeros Auxilios"],
     trabajosRealizados:[
       { titulo:"Cambio de pastillas y discos de freno", fecha:"Sep 2024", rating:5 },
       { titulo:"Reparación de suspensión delantera",   fecha:"Ago 2024", rating:5 },
-      { titulo:"Alineación y balanceo",                 fecha:"Jul 2024", rating:4 }
+      { titulo:"Alineación y balanceo",                fecha:"Jul 2024", rating:4 }
     ],
     resenas:[
       { autor:"María G.", rating:5, texto:"Excelente trabajo, muy profesional y puntual.", fecha:"Hace 1 semana" },
       { autor:"José R.",  rating:5, texto:"Dejó mi carro como nuevo. Totalmente recomendado.", fecha:"Hace 2 semanas" },
       { autor:"Ana P.",   rating:4, texto:"Buen trabajo, aunque tardó un poco más de lo previsto.", fecha:"Hace 1 mes" }
-    ],
-    telefono:"+58 412-1234567"
+    ]
   },
   {
-    id:2, nombre:"Luis Ramírez", oficio:"electricista",
-    especialidad:"Instalaciones residenciales",
+    id:2, tipo:"mecanico", nombre:"Luis Rodríguez",
+    especialidad:"Electricidad automotriz",
     foto:"https://i.pravatar.cc/200?img=33",
-    rating:4.9, totalReviews:62, distanciaKm:2.5, disponible:true,
-    trabajaEnTaller:false, verificado:true,
-    zona:"Mérida, Mérida", aniosExperiencia:10, precioHora:10,
-    descripcion:"Electricista certificado con 10 años de experiencia. Instalaciones residenciales, comerciales, tableros eléctricos y sistemas de respaldo.",
-    certificaciones:["CODELECTRA","OSHA 30h"],
+    rating:4.9, totalReviews:62, lat:7.7800, lng:-72.2200,
+    direccion:"Calle 5 con Av. 19, San Cristóbal, Táchira",
+    disponible:true, verificado:true,
+    aniosExperiencia:10, precioHora:10,
+    descripcion:"Electricista automotriz certificado. Diagnóstico por escáner, reparación de sistemas eléctricos, inyectores y computadoras de vehículos.",
+    certificaciones:["CODELECTRA","Bosch Diagnostics"],
     trabajosRealizados:[
-      { titulo:"Instalación de tablero eléctrico", fecha:"Sep 2024", rating:5 },
-      { titulo:"Cableado de vivienda completa",     fecha:"Jun 2024", rating:5 }
+      { titulo:"Diagnóstico de falla eléctrica", fecha:"Sep 2024", rating:5 },
+      { titulo:"Reparación de alternador",       fecha:"Ago 2024", rating:5 }
     ],
     resenas:[
-      { autor:"Pedro V.", rating:5, texto:"Rápido, limpio y muy profesional.", fecha:"Hace 3 días" },
-      { autor:"Carla M.", rating:5, texto:"Solucionó un problema que otros no pudieron.", fecha:"Hace 1 mes" }
-    ],
-    telefono:"+58 414-9876543"
+      { autor:"Pedro V.", rating:5, texto:"Encontró el problema que otros no pudieron. Muy profesional.", fecha:"Hace 3 días" },
+      { autor:"Carla M.", rating:5, texto:"Rápido y honesto con el precio.", fecha:"Hace 1 mes" }
+    ]
   },
   {
-    id:3, nombre:"María González", oficio:"plomero",
-    especialidad:"Plomería y gasfitería",
-    foto:"https://i.pravatar.cc/200?img=47",
-    rating:4.7, totalReviews:38, distanciaKm:3.1, disponible:false,
-    trabajaEnTaller:false, verificado:true,
-    zona:"San Cristóbal, Táchira", aniosExperiencia:8, precioHora:9,
-    descripcion:"Plomera profesional especializada en detección de fugas, instalación de gasfitería y mantenimiento de sistemas hidráulicos.",
-    certificaciones:["SENCAMER","Gasfitería Certificada"],
-    trabajosRealizados:[
-      { titulo:"Reparación de fuga en baño", fecha:"Sep 2024", rating:5 },
-      { titulo:"Instalación de calentador",  fecha:"Ago 2024", rating:4 }
-    ],
-    resenas:[
-      { autor:"Familia Rojas", rating:5, texto:"Muy profesional, dejó todo limpio.", fecha:"Hace 2 semanas" }
-    ],
-    telefono:"+58 416-5551212"
-  },
-  {
-    id:4, nombre:"Andrés Molina", oficio:"aire",
-    especialidad:"Aires acondicionados split",
-    foto:"https://i.pravatar.cc/200?img=15",
-    rating:4.6, totalReviews:29, distanciaKm:5.8, disponible:true,
-    trabajaEnTaller:true, nombreTaller:"Clima Total C.A.", verificado:true,
-    zona:"San Cristóbal, Táchira", aniosExperiencia:7, precioHora:12,
-    descripcion:"Especialista en instalación, mantenimiento y reparación de aires acondicionados tipo split y ventana.",
-    certificaciones:["Frigorista Certificado"],
-    trabajosRealizados:[
-      { titulo:"Mantenimiento de 3 equipos split", fecha:"Sep 2024", rating:5 }
-    ],
-    resenas:[
-      { autor:"Oficina Centro", rating:5, texto:"Rápido y eficiente.", fecha:"Hace 1 semana" }
-    ],
-    telefono:"+58 424-7778899"
-  },
-  {
-    id:5, nombre:"Jesús Contreras", oficio:"tecnico",
-    especialidad:"Reparación de electrodomésticos",
-    foto:"https://i.pravatar.cc/200?img=51",
-    rating:4.5, totalReviews:21, distanciaKm:4.2, disponible:true,
-    trabajaEnTaller:true, nombreTaller:"TecniFix", verificado:false,
-    zona:"Ejido, Mérida", aniosExperiencia:6, precioHora:7,
-    descripcion:"Reparación de neveras, lavadoras, secadoras y microondas. Servicio a domicilio y en taller.",
-    certificaciones:["Técnico en Refrigeración"],
-    trabajosRealizados:[
-      { titulo:"Reparación de lavadora Whirlpool", fecha:"Sep 2024", rating:4 }
-    ],
-    resenas:[
-      { autor:"Rosa D.", rating:4, texto:"Buen servicio, precio justo.", fecha:"Hace 2 semanas" }
-    ],
-    telefono:"+58 412-3334455"
-  },
-  {
-    id:6, nombre:"Pedro Sánchez", oficio:"obrero",
-    especialidad:"Albañilería y remodelación",
+    id:3, tipo:"mecanico", nombre:"Pedro Sánchez",
+    especialidad:"Suspensión y dirección",
     foto:"https://i.pravatar.cc/200?img=68",
-    rating:4.9, totalReviews:54, distanciaKm:2.0, disponible:true,
-    trabajaEnTaller:false, verificado:true,
-    zona:"San Cristóbal, Táchira", aniosExperiencia:20, precioHora:6,
-    descripcion:"Maestro de obra con 20 años de experiencia en construcción, remodelación, friso, cerámica y pintura.",
-    certificaciones:["Maestro de Obra"],
+    rating:4.7, totalReviews:38, lat:7.7550, lng:-72.2100,
+    direccion:"Barrio Sucre, Av. Principal, San Cristóbal",
+    disponible:false, verificado:true,
+    aniosExperiencia:20, precioHora:7,
+    descripcion:"Maestro mecánico con 20 años de experiencia en suspensión, dirección y tren delantero. Atención personalizada.",
+    certificaciones:["SENCAMER","Maestro Mecánico"],
     trabajosRealizados:[
-      { titulo:"Remodelación de cocina", fecha:"Sep 2024", rating:5 },
-      { titulo:"Friso y pintura de sala", fecha:"Ago 2024", rating:5 }
+      { titulo:"Cambio de amortiguadores", fecha:"Sep 2024", rating:5 },
+      { titulo:"Reparación de caja de dirección", fecha:"Ago 2024", rating:4 }
     ],
     resenas:[
       { autor:"Familia Pérez", rating:5, texto:"Trabajo impecable, muy responsable.", fecha:"Hace 5 días" }
+    ]
+  },
+  {
+    id:4, tipo:"mecanico", nombre:"Andrés Molina",
+    especialidad:"Aires acondicionados automotrices",
+    foto:"https://i.pravatar.cc/200?img=15",
+    rating:4.6, totalReviews:29, lat:7.7700, lng:-72.2300,
+    direccion:"Av. España, C.C. El Rosal, San Cristóbal",
+    disponible:true, verificado:true,
+    aniosExperiencia:7, precioHora:12,
+    descripcion:"Especialista en aire acondicionado automotriz: carga de gas, reparación de compresores y mantenimiento preventivo.",
+    certificaciones:["Frigorista Automotriz"],
+    trabajosRealizados:[
+      { titulo:"Carga de gas y limpieza de sistema", fecha:"Sep 2024", rating:5 }
     ],
-    telefono:"+58 416-2221100"
+    resenas:[
+      { autor:"Oficina Centro", rating:5, texto:"Rápido y eficiente. El aire quedó perfecto.", fecha:"Hace 1 semana" }
+    ]
+  },
+  {
+    id:5, tipo:"repuestos", nombre:"AutoPartes Los Andes",
+    especialidad:"Repuestos originales y alternativos",
+    foto:"https://i.pravatar.cc/200?img=8",
+    rating:4.8, totalReviews:83, lat:7.7900, lng:-72.2000,
+    direccion:"Av. 19 entre calles 8 y 9, San Cristóbal",
+    abierto:true, horario:"Lun-Sáb 8:00-18:00", verificado:true,
+    descripcion:"Tienda especializada en repuestos para vehículos livianos. Marcas originales y alternativas. Envíos a todo Táchira.",
+    certificaciones:["Distribuidor Autorizado"],
+    productosDestacados:["Pastillas de freno","Filtros de aceite","Baterías","Amortiguadores"],
+    resenas:[
+      { autor:"Juan D.", rating:5, texto:"Buenos precios y atención rápida.", fecha:"Hace 4 días" },
+      { autor:"María R.", rating:4, texto:"Tienen casi todo lo que busqué.", fecha:"Hace 3 semanas" }
+    ]
+  },
+  {
+    id:6, tipo:"repuestos", nombre:"Repuestos El Rápido",
+    especialidad:"Repuestos usados y nuevos",
+    foto:"https://i.pravatar.cc/200?img=14",
+    rating:4.4, totalReviews:41, lat:8.5833, lng:-71.1333,
+    direccion:"Av. Las Américas, Mérida",
+    abierto:true, horario:"Lun-Vie 8:00-17:00", verificado:false,
+    descripcion:"Venta de repuestos usados y nuevos para todas las marcas. Presupuestos por chat.",
+    productosDestacados:["Motores","Cajas","Faros","Espejos"],
+    resenas:[
+      { autor:"Luis M.", rating:4, texto:"Encontré la pieza que necesitaba a buen precio.", fecha:"Hace 1 semana" }
+    ]
+  },
+  {
+    id:7, tipo:"lubricantes", nombre:"Lubricentro Total",
+    especialidad:"Aceites y lubricantes premium",
+    foto:"https://i.pravatar.cc/200?img=59",
+    rating:4.9, totalReviews:56, lat:7.7650, lng:-72.2180,
+    direccion:"Av. Libertador, San Cristóbal",
+    abierto:true, horario:"Lun-Sáb 7:00-19:00", verificado:true,
+    descripcion:"Cambio de aceite express, venta de lubricantes premium y filtros. Servicio en menos de 30 minutos.",
+    certificaciones:["Mobil","Castrol"],
+    productosDestacados:["Mobil 1","Castrol GTX","Shell Helix","Filtros Mann"],
+    resenas:[
+      { autor:"Diego S.", rating:5, texto:"Súper rápido y buen precio.", fecha:"Hace 2 días" }
+    ]
+  },
+  {
+    id:8, tipo:"lubricantes", nombre:"Lubrimax",
+    especialidad:"Lubricantes y servicio express",
+    foto:"https://i.pravatar.cc/200?img=42",
+    rating:4.5, totalReviews:34, lat:8.5500, lng:-71.2333,
+    direccion:"Av. Principal, Ejido, Mérida",
+    abierto:false, horario:"Lun-Sáb 8:00-18:00", verificado:true,
+    descripcion:"Cambio de aceite y filtros a domicilio. Trabajamos con todas las marcas.",
+    productosDestacados:["Aceite 20W-50","Filtros de aire","Refrigerante"],
+    resenas:[
+      { autor:"Rosa D.", rating:4, texto:"Buen servicio a domicilio.", fecha:"Hace 1 semana" }
+    ]
   }
 ];
 
@@ -395,14 +485,14 @@ const TRABAJADORES = [
    SESIÓN
    ============================================================ */
 function getUsuarioActual(){
-  try{ return JSON.parse(localStorage.getItem('tc_user')||'null'); }catch{ return null; }
+  try{ return JSON.parse(localStorage.getItem('epa_user')||'null'); }catch{ return null; }
 }
 function setUsuarioActual(u){
-  localStorage.setItem('tc_user', JSON.stringify(u));
+  localStorage.setItem('epa_user', JSON.stringify(u));
   renderNav();
 }
 function cerrarSesion(){
-  localStorage.removeItem('tc_user');
+  localStorage.removeItem('epa_user');
   location.hash = '#/';
 }
 
@@ -413,9 +503,9 @@ function estrellas(r){
   const pct = Math.max(0, Math.min(100, (r/5)*100));
   return `<span class="stars"><span class="stars-fg" style="width:${pct}%"></span></span>`;
 }
-function getOficio(id){ return OFICIOS.find(o=>o.id===id) || {nombre:id,emoji:'🛠️'}; }
-function oficioNombre(id){ return getOficio(id).nombre; }
-function buscarTrabajador(id){ return TRABAJADORES.find(t=>t.id===Number(id)); }
+function getTipo(id){ return TIPOS.find(t=>t.id===id) || {nombre:id,emoji:'📍'}; }
+function tipoNombre(id){ return getTipo(id).nombre; }
+function buscarPerfil(id){ return PERFILES.find(t=>t.id===Number(id)); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* ============================================================
@@ -426,11 +516,14 @@ function renderNav(){
   const el = document.getElementById('navLinks');
   if(u){
     el.innerHTML = `
+      <a href="#/mapa">Mapa</a>
       <a href="#/buscar">Buscar</a>
-      <a href="#/panel" class="nav-user">Mi panel</a>
+      <a href="#/chats" class="nav-user">Chats</a>
+      <a href="#/panel">Mi panel</a>
       <button onclick="cerrarSesion()">Salir</button>`;
   } else {
     el.innerHTML = `
+      <a href="#/mapa">Mapa</a>
       <a href="#/buscar">Buscar</a>
       <a href="#/login" class="nav-user">Ingresar</a>
       <a href="#/registro" class="nav-cta">Ofrecer servicios</a>`;
@@ -438,15 +531,23 @@ function renderNav(){
 }
 
 /* ============================================================
-   COMPONENTE: TARJETA TRABAJADOR
+   TARJETA
    ============================================================ */
-function cardTrabajador(t){
-  const oficio = oficioNombre(t.oficio);
+function cardPerfil(t){
+  const tipo = tipoNombre(t.tipo);
   const inicial = esc(t.nombre.charAt(0));
-  const fallback = `this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%230D3B66%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2260%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-weight=%22900%22>${inicial}</text></svg>'`;
-  const disp  = t.disponible ? '<span class="badge badge-green">● Disponible</span>' : '<span class="badge badge-red">● Ocupado</span>';
-  const taller= t.trabajaEnTaller ? `<span class="badge">🏪 ${esc(t.nombreTaller||'Trabaja en taller')}</span>` : '<span class="badge">🚶 A domicilio</span>';
+  const fallback = `this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231A1A1A%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2260%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%23FFB800%22 font-family=%22sans-serif%22 font-weight=%22900%22>${inicial}</text></svg>'`;
+
+  const estado = t.tipo==='mecanico'
+    ? (t.disponible
+        ? '<span class="badge badge-green">● Disponible</span>'
+        : '<span class="badge badge-red">● Ocupado</span>')
+    : (t.abierto
+        ? '<span class="badge badge-green">● Abierto</span>'
+        : '<span class="badge badge-red">● Cerrado</span>');
+
   const verif = t.verificado ? '<span class="badge badge-gold">✔ Verificado</span>' : '';
+  const tipoBadge = `<span class="badge badge-yellow">${getTipo(t.tipo).emoji} ${tipo}</span>`;
 
   return `
     <article class="trabajador-card">
@@ -454,64 +555,133 @@ function cardTrabajador(t){
         <img class="tc-avatar" src="${t.foto}" alt="${esc(t.nombre)}" onerror="${fallback}">
         <div class="tc-info">
           <div class="tc-name">${esc(t.nombre)} ${t.verificado?'<span class="tc-verified" title="Verificado">✔</span>':''}</div>
-          <div class="tc-role">${oficio} · ${esc(t.especialidad)}</div>
+          <div class="tc-role">${esc(t.especialidad)}</div>
           <div class="tc-meta">
             <span>${estrellas(t.rating)} <b class="rating-num">${t.rating}</b> <small>(${t.totalReviews})</small></span>
-            <span>📍 ${t.distanciaKm} km</span>
           </div>
         </div>
       </div>
-      <div class="tc-badges">${disp}${taller}${verif}</div>
+      <div class="tc-badges">${tipoBadge}${estado}${verif}</div>
       <div class="tc-footer">
-        <span class="tc-price">$${t.precioHora}/hora</span>
+        <span class="tc-price">${t.tipo==='mecanico'?`$${t.precioHora}/hora`:esc(t.horario||'—')}</span>
         <a class="tc-btn" href="#/perfil/${t.id}">Ver perfil</a>
       </div>
     </article>`;
 }
 
 /* ============================================================
+   MAPA
+   ============================================================ */
+let mapaInstancias = {};
+
+function limpiarMapas(){
+  Object.values(mapaInstancias).forEach(m=>{
+    try{ m.remove(); }catch(e){}
+  });
+  mapaInstancias = {};
+}
+
+function initMapa(containerId, perfiles, opts={}){
+  if(!window.L) return;
+  if(mapaInstancias[containerId]){ return; }
+  const el = document.getElementById(containerId);
+  if(!el) return;
+
+  const zoom = opts.zoom || 9;
+  const map = L.map(containerId).setView([7.7667, -72.2167], zoom);
+  mapaInstancias[containerId] = map;
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  const markers = [];
+  perfiles.forEach(p => {
+    const clase = `marker-${p.tipo}`;
+    const emoji = getTipo(p.tipo).emoji;
+    const icon = L.divIcon({
+      className: 'custom-marker',
+      html: `<div class="marker-pin ${clase}"><span>${emoji}</span></div>`,
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40]
+    });
+    const marker = L.marker([p.lat, p.lng], { icon })
+      .addTo(map)
+      .bindPopup(`<b>${esc(p.nombre)}</b><br><small>${esc(p.especialidad)}</small><br>⭐ ${p.rating} · ${p.totalReviews} reseñas<br><a href="#/perfil/${p.id}" style="color:#1A1A1A;font-weight:700;">Ver perfil →</a>`);
+    markers.push(marker);
+  });
+
+  if(markers.length && opts.fitBounds !== false){
+    const grupo = L.featureGroup(markers);
+    map.fitBounds(grupo.getBounds(), { padding:[40,40], maxZoom:13 });
+  }
+  return map;
+}
+
+/* ============================================================
    VISTA: HOME
    ============================================================ */
 function viewHome(){
-  const destacados = TRABAJADORES.filter(t=>t.verificado).sort((a,b)=>b.rating-a.rating).slice(0,3);
+  const destacados = PERFILES.filter(t=>t.verificado).sort((a,b)=>b.rating-a.rating).slice(0,4);
   return `
     <section class="hero">
-      <h1>Encuentra profesionales<br>en los que puedes confiar</h1>
-      <p>Mecánicos, electricistas, plomeros y técnicos verificados, con historial de trabajos y reseñas reales. Cerca de ti, cuando los necesitas.</p>
+      <h1>El <span class="dot"></span> Punto<br>Amarillo</h1>
+      <p>Mecánicos verificados, tiendas de repuestos y lubricantes. Todo en un solo mapa, cerca de ti.</p>
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="¿Qué oficio necesitas? Ej: mecánico, plomero…" aria-label="Buscar oficio">
+        <input type="text" id="searchInput" placeholder="¿Qué buscas? Ej: frenos, aceite, batería…" aria-label="Buscar">
         <button onclick="buscarDesdeHome()">Buscar</button>
       </div>
+      <div class="hero-actions">
+        <a href="#/mapa" class="btn-outline">🗺️ Ver mapa</a>
+        <a href="#/buscar" class="btn-outline">🔍 Explorar</a>
+      </div>
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <h2 class="section-title">Explora por oficio</h2>
-        <a href="#/buscar" class="section-link">Ver todos →</a>
-      </div>
+      <div class="section-head"><h2 class="section-title">¿Qué necesitas hoy?</h2></div>
       <div class="categorias">
-        ${OFICIOS.filter(o=>o.id!=='todos').map(o=>`
-          <a class="categoria" href="#/buscar?oficio=${o.id}">
-            <span class="emoji">${o.emoji}</span>
-            <span class="nombre">${o.nombre}</span>
-          </a>`).join('')}
+        <a class="categoria" href="#/buscar?tipo=mecanico">
+          <span class="emoji">🔧</span>
+          <span class="nombre">Mecánicos</span>
+          <span class="desc">Reparación y mantenimiento</span>
+        </a>
+        <a class="categoria" href="#/buscar?tipo=repuestos">
+          <span class="emoji">⚙️</span>
+          <span class="nombre">Repuestos</span>
+          <span class="desc">Originales y alternativos</span>
+        </a>
+        <a class="categoria" href="#/buscar?tipo=lubricantes">
+          <span class="emoji">🛢️</span>
+          <span class="nombre">Lubricantes</span>
+          <span class="desc">Aceites y filtros</span>
+        </a>
       </div>
     </section>
 
     <section class="section">
       <div class="section-head">
-        <h2 class="section-title">Profesionales destacados</h2>
+        <h2 class="section-title">Ubicaciones en el mapa</h2>
+        <a href="#/mapa" class="section-link">Ver completo →</a>
+      </div>
+      <div id="mapa-home" class="mapa-preview"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">Mejor calificados</h2>
         <a href="#/buscar" class="section-link">Ver más →</a>
       </div>
-      <div class="grid-trabajadores">${destacados.map(cardTrabajador).join('')}</div>
+      <div class="grid-trabajadores">${destacados.map(cardPerfil).join('')}</div>
     </section>
 
     <section class="section" style="text-align:center;padding:40px 20px;background:var(--brand);color:#fff;border-radius:var(--radius);margin-top:8px;">
-      <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:12px;">¿Eres trabajador? Únete gratis</h2>
+      <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:12px;color:var(--accent);">¿Tienes un negocio automotriz?</h2>
       <p style="opacity:.9;max-width:480px;margin:0 auto 20px;">
-        Crea tu perfil verificado, muestra tus trabajos y consigue más clientes en tu zona.
+        Registra tu taller, tienda de repuestos o lubricentro. Aparece en el mapa y recibe clientes.
       </p>
-      <a href="#/registro" class="btn-contacto" style="display:inline-flex;">Crear mi perfil</a>
+      <a href="#/registro" class="btn-contacto" style="display:inline-flex;">Registrar mi negocio</a>
     </section>
   `;
 }
@@ -519,76 +689,75 @@ function viewHome(){
 function buscarDesdeHome(){
   const q = (document.getElementById('searchInput').value||'').trim().toLowerCase();
   if(!q){ location.hash='#/buscar'; return; }
-  const match = OFICIOS.find(o=>o.id!=='todos' && (o.nombre.toLowerCase().includes(q)||o.id.includes(q)));
-  location.hash = match ? `#/buscar?oficio=${match.id}` : '#/buscar';
+  const match = TIPOS.find(o=>o.id!=='todos' && (o.nombre.toLowerCase().includes(q)||o.id.includes(q)));
+  location.hash = match ? `#/buscar?tipo=${match.id}&q=${encodeURIComponent(q)}` : `#/buscar?q=${encodeURIComponent(q)}`;
 }
 
 /* ============================================================
    VISTA: BUSCAR
    ============================================================ */
 function viewBuscar(params){
-  const oficioFiltro    = params.get('oficio') || 'todos';
-  const soloDisponibles = params.get('disponibles') === '1';
+  const tipoFiltro      = params.get('tipo') || 'todos';
   const soloVerificados = params.get('verificados') === '1';
-  const orden           = params.get('orden') || 'cercania';
+  const soloDisponibles = params.get('disponibles') === '1';
+  const orden           = params.get('orden') || 'rating';
+  const q               = (params.get('q')||'').toLowerCase();
 
-  let lista = TRABAJADORES.slice();
-  if(oficioFiltro!=='todos') lista = lista.filter(t=>t.oficio===oficioFiltro);
-  if(soloDisponibles) lista = lista.filter(t=>t.disponible);
+  let lista = PERFILES.slice();
+  if(tipoFiltro!=='todos') lista = lista.filter(t=>t.tipo===tipoFiltro);
   if(soloVerificados) lista = lista.filter(t=>t.verificado);
-  if(orden==='cercania') lista.sort((a,b)=>a.distanciaKm-b.distanciaKm);
+  if(soloDisponibles) lista = lista.filter(t=>t.disponible || t.abierto);
+  if(q) lista = lista.filter(t=>
+    (t.nombre+' '+t.especialidad+' '+(t.descripcion||'')+' '+(t.productosDestacados||[]).join(' '))
+      .toLowerCase().includes(q)
+  );
   if(orden==='rating')   lista.sort((a,b)=>b.rating-a.rating);
   if(orden==='trabajos') lista.sort((a,b)=>b.totalReviews-a.totalReviews);
-
-  const qs = (extra={}) => {
-    const p = new URLSearchParams();
-    if(oficioFiltro!=='todos') p.set('oficio', oficioFiltro);
-    if(soloDisponibles) p.set('disponibles','1');
-    if(soloVerificados) p.set('verificados','1');
-    if(orden!=='cercania') p.set('orden', orden);
-    Object.entries(extra).forEach(([k,v])=> v==null||v===''||v===false ? p.delete(k) : p.set(k, v===true?'1':v));
-    return p.toString();
-  };
+  if(orden==='nombre')   lista.sort((a,b)=>a.nombre.localeCompare(b.nombre));
 
   return `
     <section class="section">
-      <h1 class="section-title" style="margin-bottom:16px;">Buscar profesionales</h1>
+      <h1 class="section-title" style="margin-bottom:16px;">Buscar</h1>
 
       <div class="filtros">
         <div class="filtro-group">
-          <span class="filtro-label">Oficio:</span>
-          ${OFICIOS.map(o=>`
-            <a class="chip ${o.id===oficioFiltro?'active':''}"
-               href="#/buscar?${(()=>{const p=new URLSearchParams(); if(o.id!=='todos')p.set('oficio',o.id); if(soloDisponibles)p.set('disponibles','1'); if(soloVerificados)p.set('verificados','1'); if(orden!=='cercania')p.set('orden',orden); return p.toString();})()}">
-              ${o.emoji} ${o.nombre}
-            </a>`).join('')}
+          <span class="filtro-label">Tipo:</span>
+          ${TIPOS.map(o=>{
+            const p = new URLSearchParams();
+            if(o.id!=='todos') p.set('tipo', o.id);
+            if(soloVerificados) p.set('verificados','1');
+            if(soloDisponibles) p.set('disponibles','1');
+            if(orden!=='rating') p.set('orden', orden);
+            if(q) p.set('q', q);
+            return `<a class="chip ${o.id===tipoFiltro?'active':''}" href="#/buscar?${p.toString()}">${o.emoji} ${o.nombre}</a>`;
+          }).join('')}
         </div>
       </div>
 
       <div class="filtros">
-        <label class="toggle">
-          <input type="checkbox" ${soloDisponibles?'checked':''}
-                 onchange="actualizarFiltro('disponibles', this.checked)">
-          Solo disponibles
-        </label>
         <label class="toggle">
           <input type="checkbox" ${soloVerificados?'checked':''}
                  onchange="actualizarFiltro('verificados', this.checked)">
           Solo verificados
         </label>
+        <label class="toggle">
+          <input type="checkbox" ${soloDisponibles?'checked':''}
+                 onchange="actualizarFiltro('disponibles', this.checked)">
+          Solo disponibles / abiertos
+        </label>
         <div class="filtro-group" style="margin-left:auto;">
           <span class="filtro-label">Ordenar:</span>
           <select class="sel" onchange="actualizarFiltro('orden', this.value)">
-            <option value="cercania" ${orden==='cercania'?'selected':''}>Más cercanos</option>
             <option value="rating"   ${orden==='rating'?'selected':''}>Mejor calificados</option>
-            <option value="trabajos" ${orden==='trabajos'?'selected':''}>Más trabajos</option>
+            <option value="trabajos" ${orden==='trabajos'?'selected':''}>Más reseñas</option>
+            <option value="nombre"   ${orden==='nombre'?'selected':''}>Nombre A-Z</option>
           </select>
         </div>
       </div>
 
       ${lista.length===0
-        ? `<div class="empty"><div class="emoji">🔍</div><p>No encontramos profesionales con esos filtros.<br>Prueba ampliar la búsqueda.</p></div>`
-        : `<div class="grid-trabajadores">${lista.map(cardTrabajador).join('')}</div>`}
+        ? `<div class="empty"><div class="emoji">🔍</div><p>No encontramos resultados.<br>Prueba otros filtros.</p></div>`
+        : `<div class="grid-trabajadores">${lista.map(cardPerfil).join('')}</div>`}
     </section>`;
 }
 
@@ -604,14 +773,48 @@ function actualizarFiltro(key, value){
 }
 
 /* ============================================================
+   VISTA: MAPA FULL
+   ============================================================ */
+function viewMapa(){
+  const params = new URLSearchParams(location.hash.split('?')[1] || '');
+  const tipoFiltro = params.get('tipo') || 'todos';
+  const lista = tipoFiltro==='todos' ? PERFILES : PERFILES.filter(t=>t.tipo===tipoFiltro);
+
+  return `
+    <section class="section">
+      <h1 class="section-title" style="margin-bottom:16px;">Mapa de profesionales y tiendas</h1>
+      <div class="filtros">
+        <div class="filtro-group">
+          ${TIPOS.map(o=>`
+            <a class="chip ${o.id===tipoFiltro?'active':''}" href="#/mapa${o.id!=='todos'?'?tipo='+o.id:''}">${o.emoji} ${o.nombre}</a>
+          `).join('')}
+        </div>
+      </div>
+      <div id="mapa-full" class="mapa-full"></div>
+      <p style="margin-top:12px;font-size:.85rem;color:var(--muted);text-align:center;">
+        ${lista.length} resultado${lista.length!==1?'s':''} · Toca un marcador para ver detalles
+      </p>
+    </section>`;
+}
+
+/* ============================================================
    VISTA: PERFIL
    ============================================================ */
 function viewPerfil(id){
-  const t = buscarTrabajador(id);
-  if(!t) return `<div class="empty"><div class="emoji">😕</div><p>Profesional no encontrado.</p></div>`;
-  const oficio = oficioNombre(t.oficio);
+  const t = buscarPerfil(id);
+  if(!t) return `<div class="empty"><div class="emoji">😕</div><p>Perfil no encontrado.</p></div>`;
+  const tipo = tipoNombre(t.tipo);
+  const u = getUsuarioActual();
   const inicial = esc(t.nombre.charAt(0));
-  const fallback = `this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ffffff%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2260%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%230D3B66%22 font-family=%22sans-serif%22 font-weight=%22900%22>${inicial}</text></svg>'`;
+  const fallback = `this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231A1A1A%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2260%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%23FFB800%22 font-family=%22sans-serif%22 font-weight=%22900%22>${inicial}</text></svg>'`;
+
+  const estadoBadge = t.tipo==='mecanico'
+    ? (t.disponible ? '<span class="badge badge-green">● Disponible ahora</span>' : '<span class="badge badge-red">● Ocupado</span>')
+    : (t.abierto ? '<span class="badge badge-green">● Abierto</span>' : '<span class="badge badge-red">● Cerrado</span>');
+
+  const chatBtn = u
+    ? `<a class="btn-contacto" href="#/chat/${t.id}">💬 Chatear</a>`
+    : `<a class="btn-contacto" href="#/login">💬 Inicia sesión para chatear</a>`;
 
   return `
     <section style="padding-top:24px;">
@@ -621,35 +824,44 @@ function viewPerfil(id){
       <img class="perfil-avatar" src="${t.foto}" alt="${esc(t.nombre)}" onerror="${fallback}">
       <div class="perfil-info">
         <h1>${esc(t.nombre)} ${t.verificado?'✔':''}</h1>
-        <div class="role">${oficio} · ${esc(t.especialidad)}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;">
-          ${t.disponible?'<span class="badge badge-green">● Disponible ahora</span>':'<span class="badge badge-red">● Ocupado</span>'}
-          ${t.trabajaEnTaller?`<span class="badge">🏪 ${esc(t.nombreTaller||'Taller')}</span>`:'<span class="badge">🚶 A domicilio</span>'}
-          <span class="badge">📍 ${t.distanciaKm} km</span>
+        <div class="role">${tipo} · ${esc(t.especialidad)}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+          ${estadoBadge}
+          <span class="badge badge-yellow">${getTipo(t.tipo).emoji} ${tipo}</span>
+          ${t.verificado?'<span class="badge badge-gold">✔ Verificado</span>':''}
         </div>
         <div class="perfil-stats">
           <div class="stat"><div class="num">${t.rating}</div><div class="label">Rating</div></div>
           <div class="stat"><div class="num">${t.totalReviews}</div><div class="label">Reseñas</div></div>
-          <div class="stat"><div class="num">${t.aniosExperiencia}</div><div class="label">Años exp.</div></div>
-          <div class="stat"><div class="num">$${t.precioHora}</div><div class="label">Por hora</div></div>
+          ${t.tipo==='mecanico'?`
+            <div class="stat"><div class="num">${t.aniosExperiencia}</div><div class="label">Años exp.</div></div>
+            <div class="stat"><div class="num">$${t.precioHora}</div><div class="label">Por hora</div></div>
+          `:`
+            <div class="stat"><div class="num">${(t.productosDestacados||[]).length}</div><div class="label">Productos</div></div>
+          `}
         </div>
       </div>
-      <div>
-        <a class="btn-contacto" href="tel:${t.telefono.replace(/\s/g,'')}">📞 Contactar</a>
-      </div>
+      <div>${chatBtn}</div>
     </section>
 
     <div class="perfil-grid">
       <div>
         <div class="card">
-          <h2>Sobre mí</h2>
+          <h2>Sobre ${t.tipo==='mecanico'?'mí':'nosotros'}</h2>
           <p style="color:var(--muted);font-size:.95rem;">${esc(t.descripcion)}</p>
-          <div style="margin-top:16px;">
-            <strong style="font-size:.85rem;color:var(--brand);">Certificaciones:</strong><br>
-            ${t.certificaciones.map(c=>`<span class="certificacion">🏅 ${esc(c)}</span>`).join('')}
-          </div>
+          ${t.certificaciones ? `
+            <div style="margin-top:16px;">
+              <strong style="font-size:.85rem;color:var(--brand);">Certificaciones:</strong><br>
+              ${t.certificaciones.map(c=>`<span class="certificacion">🏅 ${esc(c)}</span>`).join('')}
+            </div>` : ''}
+          ${t.productosDestacados ? `
+            <div style="margin-top:16px;">
+              <strong style="font-size:.85rem;color:var(--brand);">Productos destacados:</strong><br>
+              ${t.productosDestacados.map(c=>`<span class="certificacion">🔧 ${esc(c)}</span>`).join('')}
+            </div>` : ''}
         </div>
 
+        ${t.trabajosRealizados ? `
         <div class="card">
           <h2>Trabajos recientes (${t.trabajosRealizados.length})</h2>
           ${t.trabajosRealizados.map(tr=>`
@@ -660,7 +872,7 @@ function viewPerfil(id){
               </div>
               ${estrellas(tr.rating)}
             </div>`).join('')}
-        </div>
+        </div>` : ''}
 
         <div class="card">
           <h2>Reseñas (${t.totalReviews})</h2>
@@ -679,14 +891,18 @@ function viewPerfil(id){
       <aside>
         <div class="card">
           <h2>Ubicación</h2>
-          <p style="font-size:.9rem;color:var(--muted);">📍 ${esc(t.zona)}</p>
-          <p style="font-size:.85rem;color:var(--muted);margin-top:6px;">A ${t.distanciaKm} km de tu ubicación aproximada.</p>
+          <p style="font-size:.9rem;color:var(--muted);">📍 ${esc(t.direccion)}</p>
+          ${t.horario?`<p style="font-size:.85rem;color:var(--muted);margin-top:6px;">🕐 ${esc(t.horario)}</p>`:''}
+          <div id="mapa-mini-${t.id}" class="mapa-mini"></div>
         </div>
         <div class="card">
           <h2>Contacto</h2>
-          <p style="font-size:.9rem;color:var(--muted);">${esc(t.telefono)}</p>
-          <a href="tel:${t.telefono.replace(/\s/g,'')}" class="btn-primary" style="display:block;text-align:center;">Llamar ahora</a>
-          <a href="https://wa.me/${t.telefono.replace(/[^0-9]/g,'')}" target="_blank" rel="noopener" class="btn-secondary">WhatsApp</a>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px;">
+            Usa el chat interno para consultar disponibilidad, precios y coordinar el servicio.
+          </p>
+          ${u
+            ? `<a href="#/chat/${t.id}" class="btn-primary" style="display:block;text-align:center;text-decoration:none;">💬 Enviar mensaje</a>`
+            : `<a href="#/login" class="btn-primary" style="display:block;text-align:center;text-decoration:none;">Inicia sesión para chatear</a>`}
         </div>
       </aside>
     </div>`;
@@ -700,7 +916,7 @@ function viewLogin(){
     <div class="auth-wrap">
       <div class="auth-card">
         <h1>Ingresar</h1>
-        <p class="sub">Accede a tu cuenta de TrabajoConfiable</p>
+        <p class="sub">Accede a tu cuenta de El Punto Amarillo</p>
         <form onsubmit="handleLogin(event)">
           <div class="field">
             <label for="loginEmail">Correo o teléfono</label>
@@ -712,7 +928,7 @@ function viewLogin(){
           </div>
           <button type="submit" class="btn-primary">Ingresar</button>
         </form>
-        <div class="auth-switch">¿No tienes cuenta? <a href="#/registro">Regístrate como profesional</a></div>
+        <div class="auth-switch">¿No tienes cuenta? <a href="#/registro">Registra tu negocio</a></div>
         <div class="demo-note">Demo: cualquier correo y contraseña funcionan. La autenticación real se conectará con Supabase.</div>
       </div>
     </div>`;
@@ -725,31 +941,33 @@ function viewRegistro(){
   return `
     <div class="auth-wrap" style="max-width:560px;">
       <div class="auth-card">
-        <h1>Ofrecer mis servicios</h1>
-        <p class="sub">Crea tu perfil profesional verificado. Es gratis.</p>
+        <h1>Registrar mi negocio</h1>
+        <p class="sub">Mecánico, tienda de repuestos o lubricentro. Es gratis.</p>
         <form onsubmit="handleRegistro(event)">
-          <div class="field"><label for="regNombre">Nombre completo</label>
-            <input type="text" id="regNombre" placeholder="Ej: Carlos Pérez" required></div>
-          <div class="field"><label for="regOficio">Oficio principal</label>
-            <select id="regOficio" required>
-              <option value="">Selecciona un oficio</option>
-              ${OFICIOS.filter(o=>o.id!=='todos').map(o=>`<option value="${o.id}">${o.emoji} ${o.nombre}</option>`).join('')}
-            </select></div>
-          <div class="field"><label for="regEspecialidad">Especialidad</label>
-            <input type="text" id="regEspecialidad" placeholder="Ej: Frenos y suspensión" required></div>
-          <div class="field"><label for="regZona">Zona / Ciudad</label>
-            <input type="text" id="regZona" placeholder="Ej: San Cristóbal, Táchira" required></div>
-          <div class="field"><label for="regTelefono">Teléfono (WhatsApp)</label>
+          <div class="field">
+            <label for="regTipo">¿Qué tipo de negocio?</label>
+            <select id="regTipo" onchange="toggleCamposRegistro()" required>
+              <option value="mecanico">🔧 Soy mecánico</option>
+              <option value="repuestos">⚙️ Tienda de repuestos</option>
+              <option value="lubricantes">🛢️ Lubricentro</option>
+            </select>
+          </div>
+          <div class="field"><label for="regNombre">Nombre del negocio o profesional</label>
+            <input type="text" id="regNombre" placeholder="Ej: Carlos Pérez / AutoPartes Los Andes" required></div>
+          <div class="field"><label for="regEspecialidad">Especialidad / rubro</label>
+            <input type="text" id="regEspecialidad" placeholder="Ej: Frenos y suspensión / Repuestos originales" required></div>
+          <div class="field"><label for="regDireccion">Dirección</label>
+            <input type="text" id="regDireccion" placeholder="Ej: Av. Ferrero Tamayo, San Cristóbal" required></div>
+          <div class="field"><label for="regTelefono">Teléfono (uso interno, no se muestra)</label>
             <input type="tel" id="regTelefono" placeholder="+58 412-1234567" required></div>
-          <div class="field"><label for="regExp">Años de experiencia</label>
-            <input type="number" id="regExp" min="0" max="60" placeholder="Ej: 10" required></div>
-          <div class="field"><label for="regPrecio">Precio por hora (USD)</label>
-            <input type="number" id="regPrecio" min="1" max="200" placeholder="Ej: 8" required></div>
-          <div class="field"><label for="regTaller">¿Trabajas en taller?</label>
-            <select id="regTaller">
-              <option value="no">No, voy a domicilio</option>
-              <option value="si">Sí, trabajo en taller</option>
-            </select></div>
+          <div class="field" data-for="mecanico"><label for="regExp">Años de experiencia</label>
+            <input type="number" id="regExp" min="0" max="60" placeholder="Ej: 10"></div>
+          <div class="field" data-for="mecanico"><label for="regPrecio">Precio por hora (USD)</label>
+            <input type="number" id="regPrecio" min="1" max="200" placeholder="Ej: 8"></div>
+          <div class="field" data-for="tienda"><label for="regHorario">Horario de atención</label>
+            <input type="text" id="regHorario" placeholder="Ej: Lun-Sáb 8:00-18:00"></div>
+          <div class="field" data-for="tienda"><label for="regProductos">Productos destacados (separados por coma)</label>
+            <input type="text" id="regProductos" placeholder="Ej: Pastillas de freno, Filtros, Baterías"></div>
           <div class="field"><label for="regDesc">Descripción breve</label>
             <textarea id="regDesc" rows="3" placeholder="Describe tu experiencia y servicios."></textarea></div>
           <button type="submit" class="btn-primary">Crear mi perfil</button>
@@ -757,6 +975,16 @@ function viewRegistro(){
         <div class="auth-switch">¿Ya tienes cuenta? <a href="#/login">Ingresar</a></div>
       </div>
     </div>`;
+}
+
+function toggleCamposRegistro(){
+  const tipo = document.getElementById('regTipo').value;
+  document.querySelectorAll('[data-for="mecanico"]').forEach(el=>{
+    el.style.display = tipo==='mecanico' ? 'block' : 'none';
+  });
+  document.querySelectorAll('[data-for="tienda"]').forEach(el=>{
+    el.style.display = tipo==='mecanico' ? 'none' : 'block';
+  });
 }
 
 /* ============================================================
@@ -770,8 +998,8 @@ function viewPanel(){
       <div class="panel-header">
         <div class="avatar">${esc(u.nombre.charAt(0))}</div>
         <div style="flex:1;min-width:200px;">
-          <h1>Hola, ${esc(u.nombre.split(' ')[0])}</h1>
-          <p style="color:var(--muted);font-size:.9rem;">${esc(u.especialidad||'')} · ${esc(u.zona||'')}</p>
+          <h1>${esc(u.nombre)}</h1>
+          <p style="color:var(--muted);font-size:.9rem;">${esc(u.especialidad||'')} · ${esc(u.tipo==='mecanico'?'Mecánico':(u.tipo==='repuestos'?'Repuestos':'Lubricantes'))}</p>
         </div>
         <span class="badge ${u.verificado?'badge-green':'badge-gold'}">${u.verificado?'✔ Verificado':'⏳ Verificación pendiente'}</span>
       </div>
@@ -779,37 +1007,35 @@ function viewPanel(){
       <div class="panel-stats">
         <div class="panel-stat"><div class="num">0</div><div class="label">Rating</div></div>
         <div class="panel-stat"><div class="num">0</div><div class="label">Reseñas</div></div>
-        <div class="panel-stat"><div class="num">0</div><div class="label">Trabajos</div></div>
-        <div class="panel-stat"><div class="num">${u.disponible?'Sí':'No'}</div><div class="label">Disponible</div></div>
+        <div class="panel-stat"><div class="num">0</div><div class="label">Chats</div></div>
+        <div class="panel-stat"><div class="num">${u.disponible||u.abierto?'Sí':'No'}</div><div class="label">Disponible</div></div>
       </div>
 
       <div class="card">
         <h2>Tu perfil</h2>
-        <p style="font-size:.9rem;color:var(--muted);margin-bottom:12px;">Así te verán los clientes. Pronto podrás editar todos los campos y subir fotos.</p>
         <div style="font-size:.9rem;line-height:1.9;">
-          <div><b>Oficio:</b> ${esc(oficioNombre(u.oficio))}</div>
+          <div><b>Tipo:</b> ${esc(u.tipo==='mecanico'?'Mecánico':(u.tipo==='repuestos'?'Tienda de repuestos':'Lubricentro'))}</div>
           <div><b>Especialidad:</b> ${esc(u.especialidad||'—')}</div>
-          <div><b>Zona:</b> ${esc(u.zona||'—')}</div>
-          <div><b>Teléfono:</b> ${esc(u.telefono||'—')}</div>
-          <div><b>Experiencia:</b> ${u.aniosExperiencia||0} años</div>
-          <div><b>Precio:</b> $${u.precioHora||0}/hora</div>
-          <div><b>Taller:</b> ${u.trabajaEnTaller?'Sí':'No, a domicilio'}</div>
+          <div><b>Dirección:</b> ${esc(u.direccion||'—')}</div>
+          ${u.horario?`<div><b>Horario:</b> ${esc(u.horario)}</div>`:''}
+          ${u.tipo==='mecanico'?`<div><b>Experiencia:</b> ${u.aniosExperiencia||0} años</div>
+          <div><b>Precio:</b> $${u.precioHora||0}/hora</div>`:''}
         </div>
       </div>
 
       <div class="card">
-        <h2>Trabajos completados</h2>
-        <div class="empty" style="padding:20px;">
-          <div class="emoji" style="font-size:2rem;">📋</div>
-          <p style="font-size:.9rem;">Aún no tienes trabajos registrados.<br>Cuando los clientes te contacten y completes servicios, aparecerán aquí.</p>
-        </div>
+        <h2>Tus chats</h2>
+        <p style="font-size:.9rem;color:var(--muted);">
+          ${getChats().length===0 ? 'Aún no tienes conversaciones. Los clientes te escribirán por aquí.' : `Tienes ${getChats().length} conversación(es).`}
+        </p>
+        ${getChats().length > 0 ? '<a href="#/chats" class="btn-secondary" style="margin-top:12px;">Ver mis chats</a>' : ''}
       </div>
 
       <div class="card">
         <h2>Próximos pasos</h2>
         <ul style="font-size:.9rem;color:var(--muted);line-height:1.9;padding-left:20px;">
-          <li>Sube tu cédula y certificados para obtener la verificación ✔</li>
-          <li>Agrega fotos de trabajos anteriores a tu portafolio</li>
+          <li>Sube tu cédula y RIF para obtener la verificación ✔</li>
+          <li>Agrega fotos de tu local o de tus trabajos</li>
           <li>Activa tu disponibilidad para recibir clientes</li>
         </ul>
       </div>
@@ -817,33 +1043,150 @@ function viewPanel(){
 }
 
 /* ============================================================
-   HANDLERS
+   CHATS
+   ============================================================ */
+function getChats(){
+  try{ return JSON.parse(localStorage.getItem('epa_chats')||'[]'); }catch{ return []; }
+}
+function saveChats(chats){
+  localStorage.setItem('epa_chats', JSON.stringify(chats));
+}
+function getChat(perfilId){
+  return getChats().find(c => c.perfilId === Number(perfilId));
+}
+function crearChatSiNoExiste(perfilId){
+  const chats = getChats();
+  if(chats.find(c => c.perfilId === Number(perfilId))) return;
+  chats.unshift({ perfilId: Number(perfilId), mensajes: [] });
+  saveChats(chats);
+}
+function enviarMensaje(perfilId, texto){
+  const chats = getChats();
+  let chat = chats.find(c => c.perfilId === Number(perfilId));
+  if(!chat){ chat = { perfilId: Number(perfilId), mensajes: [] }; chats.unshift(chat); }
+  chat.mensajes.push({ texto, emisor:'yo', hora: new Date().toISOString() });
+  saveChats(chats);
+  // Respuesta automática simulada (se reemplazará por chat real con Supabase)
+  setTimeout(()=>{
+    const chats2 = getChats();
+    const c2 = chats2.find(c => c.perfilId === Number(perfilId));
+    if(c2){
+      const perfil = buscarPerfil(perfilId);
+      c2.mensajes.push({
+        texto: `Gracias por escribir a ${perfil?perfil.nombre:''}. En breve te respondo con más detalles.`,
+        emisor:'ellos', hora: new Date().toISOString()
+      });
+      saveChats(chats2);
+      if(location.hash === `#/chat/${perfilId}`) render();
+    }
+  }, 1500);
+}
+
+function viewChats(){
+  const u = getUsuarioActual();
+  if(!u){ location.hash='#/login'; return ''; }
+  const chats = getChats();
+  return `
+    <section class="section">
+      <h1 class="section-title" style="margin-bottom:16px;">Mis chats</h1>
+      ${chats.length===0
+        ? `<div class="empty"><div class="emoji">💬</div><p>No tienes conversaciones aún.<br>Explora el <a href="#/buscar" style="color:var(--brand);font-weight:700;text-decoration:underline;">directorio</a> y escribe a un profesional.</p></div>`
+        : `<div class="chat-lista">${chats.map(c=>{
+            const p = buscarPerfil(c.perfilId);
+            if(!p) return '';
+            const ultimo = c.mensajes[c.mensajes.length-1];
+            return `
+              <a class="chat-item" href="#/chat/${p.id}">
+                <img src="${p.foto}" alt="${esc(p.nombre)}" onerror="this.style.display='none'">
+                <div class="chat-item-info">
+                  <div class="chat-item-nombre">${esc(p.nombre)}</div>
+                  <div class="chat-item-ultimo">${ultimo?esc(ultimo.texto):'Sin mensajes aún'}</div>
+                </div>
+              </a>`;
+          }).join('')}</div>`}
+    </section>`;
+}
+
+function viewChat(perfilId){
+  const u = getUsuarioActual();
+  if(!u){ location.hash='#/login'; return ''; }
+  const p = buscarPerfil(perfilId);
+  if(!p) return `<div class="empty"><div class="emoji">😕</div><p>Perfil no encontrado.</p></div>`;
+  crearChatSiNoExiste(perfilId);
+  const chat = getChat(perfilId) || { mensajes: [] };
+  const hora = iso => new Date(iso).toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+
+  return `
+    <section class="section">
+      <a href="#/chats" style="color:var(--muted);font-size:.9rem;">← Volver a chats</a>
+      <div class="chat-wrap">
+        <div class="chat-conv">
+          <div class="chat-conv-header">
+            <img src="${p.foto}" alt="${esc(p.nombre)}" onerror="this.style.visibility='hidden'">
+            <div class="info">
+              <div class="nombre">${esc(p.nombre)}</div>
+              <div class="rol">${esc(p.especialidad)}</div>
+            </div>
+            <a href="#/perfil/${p.id}" style="font-size:.85rem;color:var(--brand);font-weight:700;">Ver perfil</a>
+          </div>
+          <div class="chat-msgs" id="chat-msgs">
+            ${chat.mensajes.length===0
+              ? `<div class="empty" style="padding:20px;"><div class="emoji">👋</div><p style="font-size:.9rem;">Envía el primer mensaje para consultar disponibilidad, precios o coordinar un servicio.</p></div>`
+              : chat.mensajes.map(m=>`
+                  <div class="msg ${m.emisor==='yo'?'msg-yo':'msg-ellos'}">
+                    ${esc(m.texto)}
+                    <span class="msg-hora">${hora(m.hora)}</span>
+                  </div>
+                `).join('')}
+          </div>
+          <form class="chat-input" onsubmit="handleEnviarMensaje(event, ${p.id})">
+            <input type="text" id="chatInput" placeholder="Escribe un mensaje…" autocomplete="off" required>
+            <button type="submit" aria-label="Enviar">➤</button>
+          </form>
+        </div>
+      </div>
+    </section>`;
+}
+
+function handleEnviarMensaje(e, perfilId){
+  e.preventDefault();
+  const input = document.getElementById('chatInput');
+  const texto = input.value.trim();
+  if(!texto) return;
+  enviarMensaje(perfilId, texto);
+  input.value = '';
+  render();
+}
+
+/* ============================================================
+   HANDLERS AUTH
    ============================================================ */
 function handleLogin(e){
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
   setUsuarioActual({
-    nombre:'Carlos Pérez', oficio:'mecanico',
-    especialidad:'Mecánica general y frenos',
-    zona:'San Cristóbal, Táchira', telefono:'+58 412-1234567',
-    aniosExperiencia:15, precioHora:8,
-    trabajaEnTaller:true, disponible:true, verificado:true, email
+    nombre:'Mi cuenta', tipo:'mecanico',
+    especialidad:'Cuenta demo', direccion:'—',
+    disponible:true, verificado:true, email
   });
   location.hash = '#/panel';
 }
 
 function handleRegistro(e){
   e.preventDefault();
+  const tipo = document.getElementById('regTipo').value;
+  const productosStr = document.getElementById('regProductos').value || '';
   setUsuarioActual({
     nombre: document.getElementById('regNombre').value,
-    oficio: document.getElementById('regOficio').value,
+    tipo,
     especialidad: document.getElementById('regEspecialidad').value,
-    zona: document.getElementById('regZona').value,
+    direccion: document.getElementById('regDireccion').value,
     telefono: document.getElementById('regTelefono').value,
     aniosExperiencia: Number(document.getElementById('regExp').value)||0,
     precioHora: Number(document.getElementById('regPrecio').value)||0,
-    trabajaEnTaller: document.getElementById('regTaller').value==='si',
-    disponible:true, verificado:false,
+    horario: document.getElementById('regHorario').value,
+    productosDestacados: productosStr ? productosStr.split(',').map(s=>s.trim()).filter(Boolean) : [],
+    disponible:true, abierto:true, verificado:false,
     descripcion: document.getElementById('regDesc').value
   });
   location.hash = '#/panel';
@@ -859,23 +1202,56 @@ function parseHash(){
 }
 
 function render(){
+  limpiarMapas();
   const { path, params } = parseHash();
   const app = document.getElementById('app');
   let html = '';
-  if(path==='/'||path==='')      html = viewHome();
-  else if(path==='/buscar')       html = viewBuscar(params);
-  else if(path.startsWith('/perfil/')) html = viewPerfil(path.split('/')[2]);
-  else if(path==='/login')        html = viewLogin();
-  else if(path==='/registro')     html = viewRegistro();
-  else if(path==='/panel')        html = viewPanel();
-  else html = `<div class="empty"><div class="emoji">😕</div><p>Página no encontrada.</p><p style="margin-top:12px;"><a href="#/" style="color:var(--brand);font-weight:700;">Volver al inicio</a></p></div>`;
+
+  if(path==='/'||path==='')             html = viewHome();
+  else if(path==='/buscar')              html = viewBuscar(params);
+  else if(path==='/mapa')                html = viewMapa();
+  else if(path.startsWith('/perfil/'))   html = viewPerfil(path.split('/')[2]);
+  else if(path==='/login')               html = viewLogin();
+  else if(path==='/registro')            html = viewRegistro();
+  else if(path==='/panel')               html = viewPanel();
+  else if(path==='/chats')               html = viewChats();
+  else if(path.startsWith('/chat/'))     html = viewChat(path.split('/')[2]);
+  else html = `<div class="empty"><div class="emoji">😕</div><p>Página no encontrada.</p><p style="margin-top:12px;"><a href="#/" style="color:var(--brand);font-weight:700;text-decoration:underline;">Volver al inicio</a></p></div>`;
+
   app.innerHTML = `<div class="view">${html}</div>`;
   renderNav();
   window.scrollTo(0,0);
+
+  // Inicializar mapas después de insertar HTML
+  setTimeout(()=>{
+    if(path==='/' || path===''){
+      initMapa('mapa-home', PERFILES, { zoom: 9 });
+    }
+    if(path==='/mapa'){
+      const tipo = new URLSearchParams(location.hash.split('?')[1]||'').get('tipo') || 'todos';
+      const lista = tipo==='todos' ? PERFILES : PERFILES.filter(t=>t.tipo===tipo);
+      initMapa('mapa-full', lista, { zoom: 9 });
+    }
+    if(path.startsWith('/perfil/')){
+      const id = path.split('/')[2];
+      const t = buscarPerfil(id);
+      if(t){
+        const map = initMapa(`mapa-mini-${t.id}`, [t], { zoom: 15, fitBounds: false });
+        if(map) map.setView([t.lat, t.lng], 15);
+      }
+    }
+    if(path==='/registro'){
+      toggleCamposRegistro();
+    }
+    if(path.startsWith('/chat/')){
+      const msgs = document.getElementById('chat-msgs');
+      if(msgs) msgs.scrollTop = msgs.scrollHeight;
+    }
+  }, 60);
 }
 
 window.addEventListener('hashchange', render);
-window.addEventListener('DOMContentLoaded', () => { renderNav(); render(); });
+window.addEventListener('DOMContentLoaded', ()=>{ renderNav(); render(); });
 
 /* ============================================================
    SERVICE WORKER
