@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>El Punto Amarillo — Mecánicos, repuestos, grúas y más en un solo punto.</title>
-<meta name="description" content="Encuentra mecánicos, repuestos, grúas, taxis, talleres y vehículos en Venezuela. Todo en un solo mapa.">
+<meta name="description" content="Encuentra mecánicos, repuestos, grúas, taxis, talleres y vehículos en Mérida. Todo en un solo mapa.">
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#1A1A1A">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
@@ -345,12 +345,19 @@ footer .foot-mark{width:28px;height:28px;background:var(--accent);color:var(--br
   <div class="foot-inner">
     <div class="foot-logo"><span class="foot-mark">PA</span> El Punto Amarillo</div>
     <p>Mecánicos, repuestos, grúas, taxi y más en un solo punto.</p>
-    <p>© 2026 El Punto Amarillo · Venezuela</p>
+    <p>© 2026 El Punto Amarillo · Mérida, Venezuela</p>
   </div>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+/* ============================================================
+   CENTRO DEL MAPA — Av. 16, Mérida, Venezuela
+   ============================================================ */
+const CENTRO_MERIDA = { lat: 8.5895, lng: -71.1510 };
+const ZOOM_MERIDA = 15;
+const ZOOM_FULL = 14;
+
 /* ============================================================
    CATEGORÍAS
    ============================================================ */
@@ -366,7 +373,7 @@ const TIPOS = [
 ];
 
 /* ============================================================
-   PERFILES (mock)
+   PERFILES — Todos ubicados en Mérida, Av. 16
    ============================================================ */
 const PERFILES = [
   /* ---------- MECÁNICOS ---------- */
@@ -374,8 +381,8 @@ const PERFILES = [
     id:1, tipo:"mecanico", nombre:"Carlos Pérez",
     especialidad:"Mecánica general y frenos",
     foto:"https://i.pravatar.cc/200?img=12",
-    rating:4.8, totalReviews:47, lat:7.7667, lng:-72.2167,
-    direccion:"Av. Ferrero Tamayo, San Cristóbal, Táchira",
+    rating:4.8, totalReviews:47, lat:8.5920, lng:-71.1490,
+    direccion:"Av. 16 con Calle 26, Mérida",
     disponible:true, verificado:true,
     aniosExperiencia:15, precioHora:8,
     descripcion:"Mecánico automotriz con 15 años de experiencia en vehículos livianos. Especialista en sistemas de frenos y suspensión. Trabajo garantizado y repuestos originales.",
@@ -400,8 +407,8 @@ const PERFILES = [
     id:2, tipo:"mecanico", nombre:"Luis Rodríguez",
     especialidad:"Electricidad automotriz",
     foto:"https://i.pravatar.cc/200?img=33",
-    rating:4.9, totalReviews:62, lat:7.7800, lng:-72.2200,
-    direccion:"Calle 5 con Av. 19, San Cristóbal, Táchira",
+    rating:4.9, totalReviews:62, lat:8.5890, lng:-71.1510,
+    direccion:"Av. 16 con Calle 24, Mérida",
     disponible:true, verificado:true,
     aniosExperiencia:10, precioHora:10,
     descripcion:"Electricista automotriz certificado. Diagnóstico por escáner, reparación de sistemas eléctricos, inyectores y computadoras de vehículos.",
@@ -423,8 +430,8 @@ const PERFILES = [
     id:3, tipo:"mecanico", nombre:"Pedro Sánchez",
     especialidad:"Suspensión y dirección",
     foto:"https://i.pravatar.cc/200?img=68",
-    rating:4.7, totalReviews:38, lat:7.7550, lng:-72.2100,
-    direccion:"Barrio Sucre, Av. Principal, San Cristóbal",
+    rating:4.7, totalReviews:38, lat:8.5950, lng:-71.1470,
+    direccion:"Av. 16 con Calle 28, Mérida",
     disponible:false, verificado:true,
     aniosExperiencia:20, precioHora:7,
     descripcion:"Maestro mecánico con 20 años de experiencia en suspensión, dirección y tren delantero. Atención personalizada.",
@@ -445,8 +452,8 @@ const PERFILES = [
     id:4, tipo:"mecanico", nombre:"Andrés Molina",
     especialidad:"Aires acondicionados automotrices",
     foto:"https://i.pravatar.cc/200?img=15",
-    rating:4.6, totalReviews:29, lat:7.7700, lng:-72.2300,
-    direccion:"Av. España, C.C. El Rosal, San Cristóbal",
+    rating:4.6, totalReviews:29, lat:8.5870, lng:-71.1530,
+    direccion:"Av. 16 con Calle 22, Mérida",
     disponible:true, verificado:true,
     aniosExperiencia:7, precioHora:12,
     descripcion:"Especialista en aire acondicionado automotriz: carga de gas, reparación de compresores y mantenimiento preventivo.",
@@ -467,10 +474,10 @@ const PERFILES = [
     id:5, tipo:"repuestos", nombre:"AutoPartes Los Andes",
     especialidad:"Repuestos originales y alternativos",
     foto:"https://i.pravatar.cc/200?img=8",
-    rating:4.8, totalReviews:83, lat:7.7900, lng:-72.2000,
-    direccion:"Av. 19 entre calles 8 y 9, San Cristóbal",
+    rating:4.8, totalReviews:83, lat:8.5930, lng:-71.1500,
+    direccion:"Av. 16 entre calles 25 y 26, Mérida",
     abierto:true, horario:"Lun-Sáb 8:00-18:00", verificado:true,
-    descripcion:"Tienda especializada en repuestos para vehículos livianos. Marcas originales y alternativas. Envíos a todo Táchira.",
+    descripcion:"Tienda especializada en repuestos para vehículos livianos. Marcas originales y alternativas. Envíos a todo el estado Mérida.",
     certificaciones:["Distribuidor Autorizado"],
     fotos:[
       "https://picsum.photos/seed/autopartes1/400/300",
@@ -486,8 +493,8 @@ const PERFILES = [
     id:6, tipo:"repuestos", nombre:"Repuestos El Rápido",
     especialidad:"Repuestos usados y nuevos",
     foto:"https://i.pravatar.cc/200?img=14",
-    rating:4.4, totalReviews:41, lat:8.5833, lng:-71.1333,
-    direccion:"Av. Las Américas, Mérida",
+    rating:4.4, totalReviews:41, lat:8.5860, lng:-71.1550,
+    direccion:"Av. 16 con Calle 20, Mérida",
     abierto:true, horario:"Lun-Vie 8:00-17:00", verificado:false,
     descripcion:"Venta de repuestos usados y nuevos para todas las marcas. Presupuestos por chat.",
     fotos:[
@@ -504,8 +511,8 @@ const PERFILES = [
     id:7, tipo:"talleres", nombre:"Sermeca",
     especialidad:"Servicios mecánicos automotrices",
     foto:"https://i.pravatar.cc/200?img=25",
-    rating:4.7, totalReviews:52, lat:7.7720, lng:-72.2250,
-    direccion:"Av. Principal, San Cristóbal, Táchira",
+    rating:4.7, totalReviews:52, lat:8.5910, lng:-71.1520,
+    direccion:"Av. 16 con Calle 23, Mérida",
     abierto:true, horario:"Lun-Sáb 8:00-18:00", verificado:true,
     descripcion:"SERMECA es un taller especializado en mecánica general, mantenimiento preventivo y correctivo. Contamos con equipos de diagnóstico de última generación y personal certificado.",
     certificaciones:["SENCAMER","Bosch Service"],
@@ -543,10 +550,10 @@ const PERFILES = [
     id:9, tipo:"gruas", nombre:"Grúas El Rápido",
     especialidad:"Servicio de grúa 24/7",
     foto:"https://i.pravatar.cc/200?img=57",
-    rating:4.6, totalReviews:34, lat:7.7580, lng:-72.2080,
-    direccion:"Av. España, San Cristóbal",
+    rating:4.6, totalReviews:34, lat:8.5940, lng:-71.1480,
+    direccion:"Av. 16 con Calle 27, Mérida",
     abierto:true, horario:"24 horas · 365 días", verificado:true,
-    descripcion:"Servicio de grúa y traslado de vehículos 24 horas, los 365 días del año. Cobertura en todo Táchira. Respuesta rápida y traslado seguro.",
+    descripcion:"Servicio de grúa y traslado de vehículos 24 horas, los 365 días del año. Cobertura en todo el estado Mérida. Respuesta rápida y traslado seguro.",
     fotos:[
       "https://picsum.photos/seed/grua1/400/300",
       "https://picsum.photos/seed/grua2/400/300"
@@ -559,13 +566,13 @@ const PERFILES = [
 
   /* ---------- TAXI ---------- */
   {
-    id:10, tipo:"taxi", nombre:"Taxi San Cristóbal",
+    id:10, tipo:"taxi", nombre:"Taxi Mérida",
     especialidad:"Servicio de taxi ejecutivo",
     foto:"https://i.pravatar.cc/200?img=11",
-    rating:4.5, totalReviews:41, lat:7.7640, lng:-72.2140,
-    direccion:"Av. 19 con Calle 5, San Cristóbal",
+    rating:4.5, totalReviews:41, lat:8.5880, lng:-71.1540,
+    direccion:"Av. 16 con Calle 21, Mérida",
     abierto:true, horario:"24 horas", verificado:true,
-    descripcion:"Servicio de taxi ejecutivo en San Cristóbal y sus alrededores. Unidades modernas, conductores verificados y tarifas justas.",
+    descripcion:"Servicio de taxi ejecutivo en Mérida y sus alrededores. Unidades modernas, conductores verificados y tarifas justas.",
     fotos:[
       "https://picsum.photos/seed/taxi1/400/300"
     ],
@@ -580,8 +587,8 @@ const PERFILES = [
     id:11, tipo:"mototaxi", nombre:"Moto Taxi Express",
     especialidad:"Moto taxi rápido y seguro",
     foto:"https://i.pravatar.cc/200?img=60",
-    rating:4.4, totalReviews:27, lat:7.7600, lng:-72.2200,
-    direccion:"Zona Centro, San Cristóbal",
+    rating:4.4, totalReviews:27, lat:8.5960, lng:-71.1460,
+    direccion:"Av. 16 con Calle 29, Mérida",
     abierto:true, horario:"6:00-22:00", verificado:false,
     descripcion:"Moto taxi con conductores verificados, cascos incluidos y tarifas accesibles. Viajes rápidos dentro de la ciudad.",
     fotos:[
@@ -598,8 +605,8 @@ const PERFILES = [
     id:12, tipo:"vehiculos", nombre:"Automotriz Los Andes",
     especialidad:"Compra y venta de vehículos",
     foto:"https://i.pravatar.cc/200?img=22",
-    rating:4.7, totalReviews:45, lat:7.7850, lng:-72.1950,
-    direccion:"Av. 19, San Cristóbal",
+    rating:4.7, totalReviews:45, lat:8.5850, lng:-71.1560,
+    direccion:"Av. 16 con Calle 19, Mérida",
     abierto:true, horario:"Lun-Sáb 9:00-18:00", verificado:true,
     descripcion:"Compra y venta de vehículos nuevos y usados. Financiamiento disponible, garantía y trámites incluidos.",
     fotos:[
@@ -714,8 +721,8 @@ function initMapa(containerId, perfiles, opts={}){
   if(mapaInstancias[containerId]) return;
   const el = document.getElementById(containerId);
   if(!el) return;
-  const zoom = opts.zoom || 9;
-  const map = L.map(containerId).setView([7.7667, -72.2167], zoom);
+  const zoom = opts.zoom || ZOOM_MERIDA;
+  const map = L.map(containerId).setView([CENTRO_MERIDA.lat, CENTRO_MERIDA.lng], zoom);
   mapaInstancias[containerId] = map;
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19, attribution: '© OpenStreetMap'
@@ -735,7 +742,7 @@ function initMapa(containerId, perfiles, opts={}){
   });
   if(markers.length && opts.fitBounds !== false){
     const grupo = L.featureGroup(markers);
-    map.fitBounds(grupo.getBounds(), { padding:[40,40], maxZoom:13 });
+    map.fitBounds(grupo.getBounds(), { padding:[40,40], maxZoom:16 });
   }
   return map;
 }
@@ -749,7 +756,7 @@ function viewHome(){
   return `
     <section class="hero">
       <h1>El <span class="dot"></span> Punto<br>Amarillo</h1>
-      <p>Mecánicos, repuestos, grúas, taxi, talleres y vehículos. Todo en un solo mapa, cerca de ti.</p>
+      <p>Mecánicos, repuestos, grúas, taxi, talleres y vehículos. Todo en un solo mapa, en la Av. 16 de Mérida.</p>
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="¿Qué buscas? Ej: frenos, grúa, taxi…" aria-label="Buscar">
         <button onclick="buscarDesdeHome()">Buscar</button>
@@ -773,7 +780,7 @@ function viewHome(){
 
     <section class="section">
       <div class="section-head">
-        <h2 class="section-title">Ubicaciones en el mapa</h2>
+        <h2 class="section-title">Ubicaciones en el mapa · Av. 16, Mérida</h2>
         <a href="#/mapa" class="section-link">Ver completo →</a>
       </div>
       <div id="mapa-home" class="mapa-preview"></div>
@@ -892,7 +899,8 @@ function viewMapa(){
   const lista = tipoFiltro==='todos' ? PERFILES : PERFILES.filter(t=>t.tipo===tipoFiltro);
   return `
     <section class="section">
-      <h1 class="section-title" style="margin-bottom:16px;">Mapa de profesionales y negocios</h1>
+      <h1 class="section-title" style="margin-bottom:4px;">Mapa · Av. 16, Mérida</h1>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">Profesionales y negocios ubicados en la Av. 16 de Mérida y sus alrededores.</p>
       <div class="filtros">
         <div class="filtro-group">
           ${TIPOS.map(o=>`
@@ -1079,7 +1087,7 @@ function viewRegistro(){
           <div class="field"><label for="regEspecialidad">Especialidad / rubro *</label>
             <input type="text" id="regEspecialidad" placeholder="Ej: Frenos y suspensión / Repuestos originales" required></div>
           <div class="field"><label for="regDireccion">Dirección *</label>
-            <input type="text" id="regDireccion" placeholder="Ej: Av. Ferrero Tamayo, San Cristóbal" required></div>
+            <input type="text" id="regDireccion" placeholder="Ej: Av. 16 con Calle 25, Mérida" required></div>
           <div class="field"><label for="regTelefono">Teléfono (uso interno, no se muestra) *</label>
             <input type="tel" id="regTelefono" placeholder="+58 412-1234567" required></div>
 
@@ -1324,7 +1332,7 @@ function handleLogin(e){
   const email = document.getElementById('loginEmail').value;
   setUsuarioActual({
     nombre:'Mi cuenta', tipo:'mecanico',
-    especialidad:'Cuenta demo', direccion:'—',
+    especialidad:'Cuenta demo', direccion:'Av. 16, Mérida',
     disponible:true, verificado:true, email
   });
   location.hash = '#/panel';
@@ -1390,19 +1398,19 @@ function render(){
 
   setTimeout(()=>{
     if(path==='/' || path===''){
-      initMapa('mapa-home', PERFILES, { zoom: 9 });
+      initMapa('mapa-home', PERFILES, { zoom: ZOOM_FULL });
     }
     if(path==='/mapa'){
       const tipo = new URLSearchParams(location.hash.split('?')[1]||'').get('tipo') || 'todos';
       const lista = tipo==='todos' ? PERFILES : PERFILES.filter(t=>t.tipo===tipo);
-      initMapa('mapa-full', lista, { zoom: 9 });
+      initMapa('mapa-full', lista, { zoom: ZOOM_FULL });
     }
     if(path.startsWith('/perfil/')){
       const id = path.split('/')[2];
       const t = buscarPerfil(id);
       if(t){
-        const map = initMapa(`mapa-mini-${t.id}`, [t], { zoom: 15, fitBounds: false });
-        if(map) map.setView([t.lat, t.lng], 15);
+        const map = initMapa(`mapa-mini-${t.id}`, [t], { zoom: 16, fitBounds: false });
+        if(map) map.setView([t.lat, t.lng], 16);
       }
     }
     if(path==='/registro'){ toggleCamposRegistro(); }
