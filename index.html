@@ -3,31 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>El Punto Amarillo — Mecánicos, repuestos y lubricantes en un solo punto.</title>
-<meta name="description" content="Encuentra mecánicos verificados, tiendas de repuestos y lubricantes en Venezuela. Todo en un solo mapa.">
+<title>El Punto Amarillo — Mecánicos, repuestos, grúas y más en un solo punto.</title>
+<meta name="description" content="Encuentra mecánicos, repuestos, grúas, taxis, talleres y vehículos en Venezuela. Todo en un solo mapa.">
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#1A1A1A">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
 <meta property="og:title" content="El Punto Amarillo">
-<meta property="og:description" content="Mecánicos, repuestos y lubricantes en un solo punto.">
+<meta property="og:description" content="Mecánicos, repuestos, grúas, taxi y más en un solo punto.">
 <meta property="og:image" content="./icons/icon-512.png">
 
-<!-- Leaflet (mapas gratis, sin API key) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 /* ============ BASE ============ */
 :root{
-  --brand:#1A1A1A;          /* negro marca / header / headings */
-  --brand-soft:#2B2B2B;
-  --accent:#FFB800;         /* amarillo del logo / CTAs */
-  --accent-dark:#E5A600;
+  --brand:#1A1A1A; --brand-soft:#2B2B2B;
+  --accent:#FFB800; --accent-dark:#E5A600;
   --success:#16A34A; --danger:#DC2626;
   --bg:#F5F5F7; --card:#FFF; --text:#1B1B1B; --muted:#6B7280;
   --border:#E5E7EB; --radius:14px;
   --shadow-sm:0 1px 2px rgba(0,0,0,.06);
   --shadow-md:0 4px 16px rgba(0,0,0,.08);
-  --shadow-lg:0 12px 40px rgba(0,0,0,.14);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -87,15 +83,14 @@ main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:0 20px}
 .section-link{color:var(--brand);font-weight:700;font-size:.9rem}
 
 /* ============ CATEGORÍAS ============ */
-.categorias{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.categorias{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .categoria{background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:24px 16px;text-align:center;
+  border-radius:var(--radius);padding:20px 12px;text-align:center;
   cursor:pointer;transition:all .2s}
 .categoria:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);
   border-color:var(--accent)}
-.categoria .emoji{font-size:2.4rem;display:block;margin-bottom:10px}
-.categoria .nombre{font-size:.98rem;font-weight:800;color:var(--brand)}
-.categoria .desc{font-size:.78rem;color:var(--muted);margin-top:4px}
+.categoria .emoji{font-size:2.2rem;display:block;margin-bottom:8px}
+.categoria .nombre{font-size:.9rem;font-weight:800;color:var(--brand)}
 
 /* ============ TARJETA ============ */
 .grid-trabajadores{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
@@ -129,11 +124,9 @@ main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:0 20px}
 .tc-btn:hover{background:var(--accent-dark)}
 
 /* ============ ESTRELLAS ============ */
-.stars{display:inline-block;position:relative;font-size:.9rem;
-  letter-spacing:1px;line-height:1}
+.stars{display:inline-block;position:relative;font-size:.9rem;letter-spacing:1px;line-height:1}
 .stars::before{content:"★★★★★";color:#E5E7EB}
-.stars-fg{position:absolute;top:0;left:0;overflow:hidden;white-space:nowrap;
-  color:var(--accent)}
+.stars-fg{position:absolute;top:0;left:0;overflow:hidden;white-space:nowrap;color:var(--accent)}
 .stars-fg::before{content:"★★★★★"}
 .rating-num{font-weight:700;color:var(--text);font-size:.85rem;margin-left:4px}
 
@@ -167,9 +160,13 @@ select.sel{padding:8px 12px;border-radius:8px;border:1px solid var(--border);
   transform:rotate(-45deg);border:3px solid #fff;
   box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .marker-pin > span{transform:rotate(45deg)}
-.marker-mecanico{background:var(--accent)}
+.marker-mecanico{background:#FFB800}
 .marker-repuestos{background:#2563EB}
-.marker-lubricantes{background:#16A34A}
+.marker-gruas{background:#DC2626}
+.marker-taxi{background:#0EA5E9}
+.marker-mototaxi{background:#F97316}
+.marker-talleres{background:#7C3AED}
+.marker-vehiculos{background:#0891B2}
 
 /* ============ PERFIL ============ */
 .perfil-header{background:linear-gradient(135deg,var(--brand),var(--brand-soft));
@@ -209,20 +206,36 @@ select.sel{padding:8px 12px;border-radius:8px;border:1px solid var(--border);
   background:#FEF3C7;color:#92400E;padding:6px 12px;border-radius:8px;
   font-size:.8rem;font-weight:700;margin:4px 4px 4px 0}
 
+/* ============ GALERÍA ============ */
+.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:8px;margin-top:4px}
+.galeria img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;
+  cursor:pointer;transition:transform .15s}
+.galeria img:hover{transform:scale(1.03)}
+
 /* ============ AUTH ============ */
-.auth-wrap{max-width:440px;margin:40px auto}
+.auth-wrap{max-width:500px;margin:40px auto}
 .auth-card{background:var(--card);border:1px solid var(--border);
   border-radius:var(--radius);padding:32px;box-shadow:var(--shadow-md)}
 .auth-card h1{font-size:1.6rem;color:var(--brand);margin-bottom:6px;font-weight:900}
-.auth-card p.sub{font-size:.9rem;color:var(--muted);margin-bottom:24px}
+.auth-card p.sub{font-size:.9rem;color:var(--muted);margin-bottom:20px}
+.costo-banner{background:var(--accent);color:var(--brand);padding:14px 16px;
+  border-radius:10px;margin-bottom:20px;text-align:center;font-weight:700}
+.costo-banner small{display:block;font-weight:500;font-size:.78rem;opacity:.85;margin-top:4px}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:.85rem;font-weight:700;
   color:var(--brand);margin-bottom:6px}
+.field .hint{display:block;font-size:.75rem;color:var(--muted);
+  font-weight:500;margin-top:4px}
 .field input,.field select,.field textarea{width:100%;padding:12px 14px;
   border-radius:10px;border:1px solid var(--border);font-size:.95rem;
   font-family:inherit;background:#fff;color:var(--text);transition:border-color .15s}
+.field input[type=file]{padding:8px}
 .field input:focus,.field select:focus,.field textarea:focus{
   outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,184,0,.2)}
+.field-divider{border-top:1px dashed var(--border);margin:24px 0 20px;padding-top:8px;
+  font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.05em}
 .btn-primary{width:100%;background:var(--accent);color:var(--brand);padding:14px;
   border-radius:12px;font-weight:800;font-size:1rem;transition:background .15s;margin-top:8px}
 .btn-primary:hover{background:var(--accent-dark)}
@@ -331,7 +344,7 @@ footer .foot-mark{width:28px;height:28px;background:var(--accent);color:var(--br
 <footer>
   <div class="foot-inner">
     <div class="foot-logo"><span class="foot-mark">PA</span> El Punto Amarillo</div>
-    <p>Mecánicos, repuestos y lubricantes en un solo punto.</p>
+    <p>Mecánicos, repuestos, grúas, taxi y más en un solo punto.</p>
     <p>© 2026 El Punto Amarillo · Venezuela</p>
   </div>
 </footer>
@@ -339,16 +352,24 @@ footer .foot-mark{width:28px;height:28px;background:var(--accent);color:var(--br
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ============================================================
-   DATOS MOCK  (se reemplazarán por Supabase)
+   CATEGORÍAS
    ============================================================ */
 const TIPOS = [
-  { id:'todos',       nombre:'Todos',       emoji:'📍' },
-  { id:'mecanico',    nombre:'Mecánicos',   emoji:'🔧' },
-  { id:'repuestos',   nombre:'Repuestos',   emoji:'⚙️' },
-  { id:'lubricantes', nombre:'Lubricantes', emoji:'🛢️' }
+  { id:'todos',     nombre:'Todos',     emoji:'📍' },
+  { id:'mecanico',  nombre:'Mecánicos', emoji:'🔧' },
+  { id:'repuestos', nombre:'Repuestos', emoji:'⚙️' },
+  { id:'gruas',     nombre:'Grúas',     emoji:'🚛' },
+  { id:'taxi',      nombre:'Taxi',      emoji:'🚕' },
+  { id:'mototaxi',  nombre:'Moto Taxi', emoji:'🏍️' },
+  { id:'talleres',  nombre:'Talleres',  emoji:'🏭' },
+  { id:'vehiculos', nombre:'Vehículos', emoji:'🚗' }
 ];
 
+/* ============================================================
+   PERFILES (mock)
+   ============================================================ */
 const PERFILES = [
+  /* ---------- MECÁNICOS ---------- */
   {
     id:1, tipo:"mecanico", nombre:"Carlos Pérez",
     especialidad:"Mecánica general y frenos",
@@ -359,6 +380,11 @@ const PERFILES = [
     aniosExperiencia:15, precioHora:8,
     descripcion:"Mecánico automotriz con 15 años de experiencia en vehículos livianos. Especialista en sistemas de frenos y suspensión. Trabajo garantizado y repuestos originales.",
     certificaciones:["SENCAMER","Bosch Service","Primeros Auxilios"],
+    fotos:[
+      "https://picsum.photos/seed/carlos1/400/300",
+      "https://picsum.photos/seed/carlos2/400/300",
+      "https://picsum.photos/seed/carlos3/400/300"
+    ],
     trabajosRealizados:[
       { titulo:"Cambio de pastillas y discos de freno", fecha:"Sep 2024", rating:5 },
       { titulo:"Reparación de suspensión delantera",   fecha:"Ago 2024", rating:5 },
@@ -380,6 +406,10 @@ const PERFILES = [
     aniosExperiencia:10, precioHora:10,
     descripcion:"Electricista automotriz certificado. Diagnóstico por escáner, reparación de sistemas eléctricos, inyectores y computadoras de vehículos.",
     certificaciones:["CODELECTRA","Bosch Diagnostics"],
+    fotos:[
+      "https://picsum.photos/seed/luis1/400/300",
+      "https://picsum.photos/seed/luis2/400/300"
+    ],
     trabajosRealizados:[
       { titulo:"Diagnóstico de falla eléctrica", fecha:"Sep 2024", rating:5 },
       { titulo:"Reparación de alternador",       fecha:"Ago 2024", rating:5 }
@@ -399,6 +429,10 @@ const PERFILES = [
     aniosExperiencia:20, precioHora:7,
     descripcion:"Maestro mecánico con 20 años de experiencia en suspensión, dirección y tren delantero. Atención personalizada.",
     certificaciones:["SENCAMER","Maestro Mecánico"],
+    fotos:[
+      "https://picsum.photos/seed/pedro1/400/300",
+      "https://picsum.photos/seed/pedro2/400/300"
+    ],
     trabajosRealizados:[
       { titulo:"Cambio de amortiguadores", fecha:"Sep 2024", rating:5 },
       { titulo:"Reparación de caja de dirección", fecha:"Ago 2024", rating:4 }
@@ -417,6 +451,9 @@ const PERFILES = [
     aniosExperiencia:7, precioHora:12,
     descripcion:"Especialista en aire acondicionado automotriz: carga de gas, reparación de compresores y mantenimiento preventivo.",
     certificaciones:["Frigorista Automotriz"],
+    fotos:[
+      "https://picsum.photos/seed/andres1/400/300"
+    ],
     trabajosRealizados:[
       { titulo:"Carga de gas y limpieza de sistema", fecha:"Sep 2024", rating:5 }
     ],
@@ -424,6 +461,8 @@ const PERFILES = [
       { autor:"Oficina Centro", rating:5, texto:"Rápido y eficiente. El aire quedó perfecto.", fecha:"Hace 1 semana" }
     ]
   },
+
+  /* ---------- REPUESTOS ---------- */
   {
     id:5, tipo:"repuestos", nombre:"AutoPartes Los Andes",
     especialidad:"Repuestos originales y alternativos",
@@ -433,6 +472,10 @@ const PERFILES = [
     abierto:true, horario:"Lun-Sáb 8:00-18:00", verificado:true,
     descripcion:"Tienda especializada en repuestos para vehículos livianos. Marcas originales y alternativas. Envíos a todo Táchira.",
     certificaciones:["Distribuidor Autorizado"],
+    fotos:[
+      "https://picsum.photos/seed/autopartes1/400/300",
+      "https://picsum.photos/seed/autopartes2/400/300"
+    ],
     productosDestacados:["Pastillas de freno","Filtros de aceite","Baterías","Amortiguadores"],
     resenas:[
       { autor:"Juan D.", rating:5, texto:"Buenos precios y atención rápida.", fecha:"Hace 4 días" },
@@ -447,36 +490,125 @@ const PERFILES = [
     direccion:"Av. Las Américas, Mérida",
     abierto:true, horario:"Lun-Vie 8:00-17:00", verificado:false,
     descripcion:"Venta de repuestos usados y nuevos para todas las marcas. Presupuestos por chat.",
+    fotos:[
+      "https://picsum.photos/seed/rapido1/400/300"
+    ],
     productosDestacados:["Motores","Cajas","Faros","Espejos"],
     resenas:[
       { autor:"Luis M.", rating:4, texto:"Encontré la pieza que necesitaba a buen precio.", fecha:"Hace 1 semana" }
     ]
   },
+
+  /* ---------- TALLERES ---------- */
   {
-    id:7, tipo:"lubricantes", nombre:"Lubricentro Total",
-    especialidad:"Aceites y lubricantes premium",
-    foto:"https://i.pravatar.cc/200?img=59",
-    rating:4.9, totalReviews:56, lat:7.7650, lng:-72.2180,
-    direccion:"Av. Libertador, San Cristóbal",
-    abierto:true, horario:"Lun-Sáb 7:00-19:00", verificado:true,
-    descripcion:"Cambio de aceite express, venta de lubricantes premium y filtros. Servicio en menos de 30 minutos.",
-    certificaciones:["Mobil","Castrol"],
-    productosDestacados:["Mobil 1","Castrol GTX","Shell Helix","Filtros Mann"],
+    id:7, tipo:"talleres", nombre:"Sermeca",
+    especialidad:"Servicios mecánicos automotrices",
+    foto:"https://i.pravatar.cc/200?img=25",
+    rating:4.7, totalReviews:52, lat:7.7720, lng:-72.2250,
+    direccion:"Av. Principal, San Cristóbal, Táchira",
+    abierto:true, horario:"Lun-Sáb 8:00-18:00", verificado:true,
+    descripcion:"SERMECA es un taller especializado en mecánica general, mantenimiento preventivo y correctivo. Contamos con equipos de diagnóstico de última generación y personal certificado.",
+    certificaciones:["SENCAMER","Bosch Service"],
+    fotos:[
+      "https://picsum.photos/seed/sermeca1/400/300",
+      "https://picsum.photos/seed/sermeca2/400/300",
+      "https://picsum.photos/seed/sermeca3/400/300"
+    ],
+    productosDestacados:["Mecánica general","Diagnóstico por escáner","Cambio de aceite","Frenos"],
     resenas:[
-      { autor:"Diego S.", rating:5, texto:"Súper rápido y buen precio.", fecha:"Hace 2 días" }
+      { autor:"Cliente frecuente", rating:5, texto:"Excelente servicio, precios justos y muy profesionales.", fecha:"Hace 1 semana" }
     ]
   },
   {
-    id:8, tipo:"lubricantes", nombre:"Lubrimax",
-    especialidad:"Lubricantes y servicio express",
-    foto:"https://i.pravatar.cc/200?img=42",
-    rating:4.5, totalReviews:34, lat:8.5500, lng:-71.2333,
-    direccion:"Av. Principal, Ejido, Mérida",
-    abierto:false, horario:"Lun-Sáb 8:00-18:00", verificado:true,
-    descripcion:"Cambio de aceite y filtros a domicilio. Trabajamos con todas las marcas.",
-    productosDestacados:["Aceite 20W-50","Filtros de aire","Refrigerante"],
+    id:8, tipo:"talleres", nombre:"DAMOSCAR",
+    especialidad:"Taller automotriz integral",
+    foto:"https://i.pravatar.cc/200?img=40",
+    rating:4.8, totalReviews:68, lat:8.5900, lng:-71.1560,
+    direccion:"Av. 16, Mérida, Mérida",
+    abierto:true, horario:"Lun-Sáb 7:30-18:00", verificado:true,
+    descripcion:"DAMOSCAR es un taller de servicios automotrices integrales ubicado en el corazón de Mérida, en la Av. 16. Especialistas en reparación de motores, transmisiones y sistemas de inyección.",
+    certificaciones:["SENCAMER","Distribuidor Autorizado"],
+    fotos:[
+      "https://picsum.photos/seed/damoscar1/400/300",
+      "https://picsum.photos/seed/damoscar2/400/300"
+    ],
+    productosDestacados:["Reparación de motores","Transmisiones","Sistema de inyección","Alineación"],
     resenas:[
-      { autor:"Rosa D.", rating:4, texto:"Buen servicio a domicilio.", fecha:"Hace 1 semana" }
+      { autor:"Cliente satisfecho", rating:5, texto:"Excelente atención. Recomendado 100%.", fecha:"Hace 3 días" }
+    ]
+  },
+
+  /* ---------- GRÚAS ---------- */
+  {
+    id:9, tipo:"gruas", nombre:"Grúas El Rápido",
+    especialidad:"Servicio de grúa 24/7",
+    foto:"https://i.pravatar.cc/200?img=57",
+    rating:4.6, totalReviews:34, lat:7.7580, lng:-72.2080,
+    direccion:"Av. España, San Cristóbal",
+    abierto:true, horario:"24 horas · 365 días", verificado:true,
+    descripcion:"Servicio de grúa y traslado de vehículos 24 horas, los 365 días del año. Cobertura en todo Táchira. Respuesta rápida y traslado seguro.",
+    fotos:[
+      "https://picsum.photos/seed/grua1/400/300",
+      "https://picsum.photos/seed/grua2/400/300"
+    ],
+    productosDestacados:["Traslado local","Traslado foráneo","Asistencia en carretera"],
+    resenas:[
+      { autor:"Pedro M.", rating:5, texto:"Llegaron rápido y con mucho cuidado.", fecha:"Hace 1 semana" }
+    ]
+  },
+
+  /* ---------- TAXI ---------- */
+  {
+    id:10, tipo:"taxi", nombre:"Taxi San Cristóbal",
+    especialidad:"Servicio de taxi ejecutivo",
+    foto:"https://i.pravatar.cc/200?img=11",
+    rating:4.5, totalReviews:41, lat:7.7640, lng:-72.2140,
+    direccion:"Av. 19 con Calle 5, San Cristóbal",
+    abierto:true, horario:"24 horas", verificado:true,
+    descripcion:"Servicio de taxi ejecutivo en San Cristóbal y sus alrededores. Unidades modernas, conductores verificados y tarifas justas.",
+    fotos:[
+      "https://picsum.photos/seed/taxi1/400/300"
+    ],
+    productosDestacados:["Traslados urbanos","Aeropuerto","Traslados interurbanos"],
+    resenas:[
+      { autor:"Carla R.", rating:5, texto:"Puntuales y amables.", fecha:"Hace 4 días" }
+    ]
+  },
+
+  /* ---------- MOTO TAXI ---------- */
+  {
+    id:11, tipo:"mototaxi", nombre:"Moto Taxi Express",
+    especialidad:"Moto taxi rápido y seguro",
+    foto:"https://i.pravatar.cc/200?img=60",
+    rating:4.4, totalReviews:27, lat:7.7600, lng:-72.2200,
+    direccion:"Zona Centro, San Cristóbal",
+    abierto:true, horario:"6:00-22:00", verificado:false,
+    descripcion:"Moto taxi con conductores verificados, cascos incluidos y tarifas accesibles. Viajes rápidos dentro de la ciudad.",
+    fotos:[
+      "https://picsum.photos/seed/moto1/400/300"
+    ],
+    productosDestacados:["Viajes urbanos","Entregas rápidas"],
+    resenas:[
+      { autor:"Luis A.", rating:4, texto:"Rápido y económico.", fecha:"Hace 2 semanas" }
+    ]
+  },
+
+  /* ---------- VEHÍCULOS ---------- */
+  {
+    id:12, tipo:"vehiculos", nombre:"Automotriz Los Andes",
+    especialidad:"Compra y venta de vehículos",
+    foto:"https://i.pravatar.cc/200?img=22",
+    rating:4.7, totalReviews:45, lat:7.7850, lng:-72.1950,
+    direccion:"Av. 19, San Cristóbal",
+    abierto:true, horario:"Lun-Sáb 9:00-18:00", verificado:true,
+    descripcion:"Compra y venta de vehículos nuevos y usados. Financiamiento disponible, garantía y trámites incluidos.",
+    fotos:[
+      "https://picsum.photos/seed/auto1/400/300",
+      "https://picsum.photos/seed/auto2/400/300"
+    ],
+    productosDestacados:["Vehículos nuevos","Vehículos usados","Financiamiento"],
+    resenas:[
+      { autor:"Diego H.", rating:5, texto:"Excelente proceso de compra.", fecha:"Hace 1 semana" }
     ]
   }
 ];
@@ -504,7 +636,7 @@ function estrellas(r){
   return `<span class="stars"><span class="stars-fg" style="width:${pct}%"></span></span>`;
 }
 function getTipo(id){ return TIPOS.find(t=>t.id===id) || {nombre:id,emoji:'📍'}; }
-function tipoNombre(id){ return getTipo(id).nombre; }
+function tipoLabel(id){ return getTipo(id).nombre; }
 function buscarPerfil(id){ return PERFILES.find(t=>t.id===Number(id)); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
@@ -534,7 +666,7 @@ function renderNav(){
    TARJETA
    ============================================================ */
 function cardPerfil(t){
-  const tipo = tipoNombre(t.tipo);
+  const tipo = tipoLabel(t.tipo);
   const inicial = esc(t.nombre.charAt(0));
   const fallback = `this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231A1A1A%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2260%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%23FFB800%22 font-family=%22sans-serif%22 font-weight=%22900%22>${inicial}</text></svg>'`;
 
@@ -573,29 +705,21 @@ function cardPerfil(t){
    MAPA
    ============================================================ */
 let mapaInstancias = {};
-
 function limpiarMapas(){
-  Object.values(mapaInstancias).forEach(m=>{
-    try{ m.remove(); }catch(e){}
-  });
+  Object.values(mapaInstancias).forEach(m=>{ try{ m.remove(); }catch(e){} });
   mapaInstancias = {};
 }
-
 function initMapa(containerId, perfiles, opts={}){
   if(!window.L) return;
-  if(mapaInstancias[containerId]){ return; }
+  if(mapaInstancias[containerId]) return;
   const el = document.getElementById(containerId);
   if(!el) return;
-
   const zoom = opts.zoom || 9;
   const map = L.map(containerId).setView([7.7667, -72.2167], zoom);
   mapaInstancias[containerId] = map;
-
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
+    maxZoom: 19, attribution: '© OpenStreetMap'
   }).addTo(map);
-
   const markers = [];
   perfiles.forEach(p => {
     const clase = `marker-${p.tipo}`;
@@ -603,16 +727,12 @@ function initMapa(containerId, perfiles, opts={}){
     const icon = L.divIcon({
       className: 'custom-marker',
       html: `<div class="marker-pin ${clase}"><span>${emoji}</span></div>`,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-      popupAnchor: [0, -40]
+      iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40]
     });
-    const marker = L.marker([p.lat, p.lng], { icon })
-      .addTo(map)
+    const marker = L.marker([p.lat, p.lng], { icon }).addTo(map)
       .bindPopup(`<b>${esc(p.nombre)}</b><br><small>${esc(p.especialidad)}</small><br>⭐ ${p.rating} · ${p.totalReviews} reseñas<br><a href="#/perfil/${p.id}" style="color:#1A1A1A;font-weight:700;">Ver perfil →</a>`);
     markers.push(marker);
   });
-
   if(markers.length && opts.fitBounds !== false){
     const grupo = L.featureGroup(markers);
     map.fitBounds(grupo.getBounds(), { padding:[40,40], maxZoom:13 });
@@ -625,12 +745,13 @@ function initMapa(containerId, perfiles, opts={}){
    ============================================================ */
 function viewHome(){
   const destacados = PERFILES.filter(t=>t.verificado).sort((a,b)=>b.rating-a.rating).slice(0,4);
+  const tiposNoTodos = TIPOS.filter(o=>o.id!=='todos');
   return `
     <section class="hero">
       <h1>El <span class="dot"></span> Punto<br>Amarillo</h1>
-      <p>Mecánicos verificados, tiendas de repuestos y lubricantes. Todo en un solo mapa, cerca de ti.</p>
+      <p>Mecánicos, repuestos, grúas, taxi, talleres y vehículos. Todo en un solo mapa, cerca de ti.</p>
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="¿Qué buscas? Ej: frenos, aceite, batería…" aria-label="Buscar">
+        <input type="text" id="searchInput" placeholder="¿Qué buscas? Ej: frenos, grúa, taxi…" aria-label="Buscar">
         <button onclick="buscarDesdeHome()">Buscar</button>
       </div>
       <div class="hero-actions">
@@ -642,21 +763,11 @@ function viewHome(){
     <section class="section">
       <div class="section-head"><h2 class="section-title">¿Qué necesitas hoy?</h2></div>
       <div class="categorias">
-        <a class="categoria" href="#/buscar?tipo=mecanico">
-          <span class="emoji">🔧</span>
-          <span class="nombre">Mecánicos</span>
-          <span class="desc">Reparación y mantenimiento</span>
-        </a>
-        <a class="categoria" href="#/buscar?tipo=repuestos">
-          <span class="emoji">⚙️</span>
-          <span class="nombre">Repuestos</span>
-          <span class="desc">Originales y alternativos</span>
-        </a>
-        <a class="categoria" href="#/buscar?tipo=lubricantes">
-          <span class="emoji">🛢️</span>
-          <span class="nombre">Lubricantes</span>
-          <span class="desc">Aceites y filtros</span>
-        </a>
+        ${tiposNoTodos.map(o=>`
+          <a class="categoria" href="#/buscar?tipo=${o.id}">
+            <span class="emoji">${o.emoji}</span>
+            <span class="nombre">${o.nombre}</span>
+          </a>`).join('')}
       </div>
     </section>
 
@@ -678,10 +789,10 @@ function viewHome(){
 
     <section class="section" style="text-align:center;padding:40px 20px;background:var(--brand);color:#fff;border-radius:var(--radius);margin-top:8px;">
       <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:12px;color:var(--accent);">¿Tienes un negocio automotriz?</h2>
-      <p style="opacity:.9;max-width:480px;margin:0 auto 20px;">
-        Registra tu taller, tienda de repuestos o lubricentro. Aparece en el mapa y recibe clientes.
+      <p style="opacity:.9;max-width:520px;margin:0 auto 20px;">
+        Mecánicos, talleres, repuestos, grúas, taxi, moto taxi y venta de vehículos. Aparece en el mapa y recibe clientes.
       </p>
-      <a href="#/registro" class="btn-contacto" style="display:inline-flex;">Registrar mi negocio</a>
+      <a href="#/registro" class="btn-contacto" style="display:inline-flex;">Registrar mi negocio · $1 USD</a>
     </section>
   `;
 }
@@ -779,10 +890,9 @@ function viewMapa(){
   const params = new URLSearchParams(location.hash.split('?')[1] || '');
   const tipoFiltro = params.get('tipo') || 'todos';
   const lista = tipoFiltro==='todos' ? PERFILES : PERFILES.filter(t=>t.tipo===tipoFiltro);
-
   return `
     <section class="section">
-      <h1 class="section-title" style="margin-bottom:16px;">Mapa de profesionales y tiendas</h1>
+      <h1 class="section-title" style="margin-bottom:16px;">Mapa de profesionales y negocios</h1>
       <div class="filtros">
         <div class="filtro-group">
           ${TIPOS.map(o=>`
@@ -803,7 +913,7 @@ function viewMapa(){
 function viewPerfil(id){
   const t = buscarPerfil(id);
   if(!t) return `<div class="empty"><div class="emoji">😕</div><p>Perfil no encontrado.</p></div>`;
-  const tipo = tipoNombre(t.tipo);
+  const tipo = tipoLabel(t.tipo);
   const u = getUsuarioActual();
   const inicial = esc(t.nombre.charAt(0));
   const fallback = `this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231A1A1A%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2260%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%23FFB800%22 font-family=%22sans-serif%22 font-weight=%22900%22>${inicial}</text></svg>'`;
@@ -837,7 +947,7 @@ function viewPerfil(id){
             <div class="stat"><div class="num">${t.aniosExperiencia}</div><div class="label">Años exp.</div></div>
             <div class="stat"><div class="num">$${t.precioHora}</div><div class="label">Por hora</div></div>
           `:`
-            <div class="stat"><div class="num">${(t.productosDestacados||[]).length}</div><div class="label">Productos</div></div>
+            <div class="stat"><div class="num">${(t.productosDestacados||[]).length}</div><div class="label">Servicios</div></div>
           `}
         </div>
       </div>
@@ -856,10 +966,18 @@ function viewPerfil(id){
             </div>` : ''}
           ${t.productosDestacados ? `
             <div style="margin-top:16px;">
-              <strong style="font-size:.85rem;color:var(--brand);">Productos destacados:</strong><br>
+              <strong style="font-size:.85rem;color:var(--brand);">Servicios y productos:</strong><br>
               ${t.productosDestacados.map(c=>`<span class="certificacion">🔧 ${esc(c)}</span>`).join('')}
             </div>` : ''}
         </div>
+
+        ${t.fotos && t.fotos.length ? `
+        <div class="card">
+          <h2>Fotos (${t.fotos.length})</h2>
+          <div class="galeria">
+            ${t.fotos.map((f,i)=>`<img src="${f}" alt="Foto ${i+1} de ${esc(t.nombre)}" loading="lazy">`).join('')}
+          </div>
+        </div>` : ''}
 
         ${t.trabajosRealizados ? `
         <div class="card">
@@ -939,40 +1057,76 @@ function viewLogin(){
    ============================================================ */
 function viewRegistro(){
   return `
-    <div class="auth-wrap" style="max-width:560px;">
+    <div class="auth-wrap" style="max-width:600px;">
       <div class="auth-card">
         <h1>Registrar mi negocio</h1>
-        <p class="sub">Mecánico, tienda de repuestos o lubricentro. Es gratis.</p>
+        <p class="sub">Mecánico, taller, repuestos, grúa, taxi, moto taxi o venta de vehículos.</p>
+
+        <div class="costo-banner">
+          💳 Registro único: $1 USD
+          <small>Incluye verificación de datos y publicación por 12 meses</small>
+        </div>
+
         <form onsubmit="handleRegistro(event)">
           <div class="field">
-            <label for="regTipo">¿Qué tipo de negocio?</label>
+            <label for="regTipo">¿Qué tipo de negocio? *</label>
             <select id="regTipo" onchange="toggleCamposRegistro()" required>
-              <option value="mecanico">🔧 Soy mecánico</option>
-              <option value="repuestos">⚙️ Tienda de repuestos</option>
-              <option value="lubricantes">🛢️ Lubricentro</option>
+              ${TIPOS.filter(t=>t.id!=='todos').map(t=>`<option value="${t.id}">${t.emoji} ${t.nombre}</option>`).join('')}
             </select>
           </div>
-          <div class="field"><label for="regNombre">Nombre del negocio o profesional</label>
+          <div class="field"><label for="regNombre">Nombre del negocio o profesional *</label>
             <input type="text" id="regNombre" placeholder="Ej: Carlos Pérez / AutoPartes Los Andes" required></div>
-          <div class="field"><label for="regEspecialidad">Especialidad / rubro</label>
+          <div class="field"><label for="regEspecialidad">Especialidad / rubro *</label>
             <input type="text" id="regEspecialidad" placeholder="Ej: Frenos y suspensión / Repuestos originales" required></div>
-          <div class="field"><label for="regDireccion">Dirección</label>
+          <div class="field"><label for="regDireccion">Dirección *</label>
             <input type="text" id="regDireccion" placeholder="Ej: Av. Ferrero Tamayo, San Cristóbal" required></div>
-          <div class="field"><label for="regTelefono">Teléfono (uso interno, no se muestra)</label>
+          <div class="field"><label for="regTelefono">Teléfono (uso interno, no se muestra) *</label>
             <input type="tel" id="regTelefono" placeholder="+58 412-1234567" required></div>
+
+          <div class="field-divider">🔐 Verificación de identidad</div>
+
+          <div class="field">
+            <label for="regDni">Cédula / DNI *</label>
+            <input type="text" id="regDni" placeholder="V-12345678" required>
+            <span class="hint">Se valida antes de activar tu perfil.</span>
+          </div>
+          <div class="field">
+            <label for="regDniFoto">Foto de la cédula (opcional)</label>
+            <input type="file" id="regDniFoto" accept="image/*">
+            <span class="hint">Frente y reverso. Se revisará manualmente.</span>
+          </div>
+          <div class="field">
+            <label for="regBanco">Referencia bancaria *</label>
+            <input type="text" id="regBanco" placeholder="Ej: Banesco · 0134-XXXX-XXXX" required>
+            <span class="hint">Cuenta donde recibirás pagos de servicios.</span>
+          </div>
+          <div class="field">
+            <label for="regRef1">Referencia personal 1 *</label>
+            <input type="text" id="regRef1" placeholder="Ej: Juan Pérez - 0414-1234567" required>
+          </div>
+          <div class="field">
+            <label for="regRef2">Referencia personal 2 *</label>
+            <input type="text" id="regRef2" placeholder="Ej: María López - 0416-7654321" required>
+          </div>
+
+          <div class="field-divider">📋 Detalles del negocio</div>
+
           <div class="field" data-for="mecanico"><label for="regExp">Años de experiencia</label>
             <input type="number" id="regExp" min="0" max="60" placeholder="Ej: 10"></div>
           <div class="field" data-for="mecanico"><label for="regPrecio">Precio por hora (USD)</label>
             <input type="number" id="regPrecio" min="1" max="200" placeholder="Ej: 8"></div>
           <div class="field" data-for="tienda"><label for="regHorario">Horario de atención</label>
             <input type="text" id="regHorario" placeholder="Ej: Lun-Sáb 8:00-18:00"></div>
-          <div class="field" data-for="tienda"><label for="regProductos">Productos destacados (separados por coma)</label>
+          <div class="field" data-for="tienda"><label for="regProductos">Servicios o productos destacados (separados por coma)</label>
             <input type="text" id="regProductos" placeholder="Ej: Pastillas de freno, Filtros, Baterías"></div>
           <div class="field"><label for="regDesc">Descripción breve</label>
             <textarea id="regDesc" rows="3" placeholder="Describe tu experiencia y servicios."></textarea></div>
-          <button type="submit" class="btn-primary">Crear mi perfil</button>
+
+          <button type="submit" class="btn-primary">Pagar $1 y crear mi perfil</button>
         </form>
+
         <div class="auth-switch">¿Ya tienes cuenta? <a href="#/login">Ingresar</a></div>
+        <div class="demo-note">Demo: el pago no se procesa realmente. En producción se conectará con un procesador de pagos.</div>
       </div>
     </div>`;
 }
@@ -999,7 +1153,7 @@ function viewPanel(){
         <div class="avatar">${esc(u.nombre.charAt(0))}</div>
         <div style="flex:1;min-width:200px;">
           <h1>${esc(u.nombre)}</h1>
-          <p style="color:var(--muted);font-size:.9rem;">${esc(u.especialidad||'')} · ${esc(u.tipo==='mecanico'?'Mecánico':(u.tipo==='repuestos'?'Repuestos':'Lubricantes'))}</p>
+          <p style="color:var(--muted);font-size:.9rem;">${esc(u.especialidad||'')} · ${esc(tipoLabel(u.tipo))}</p>
         </div>
         <span class="badge ${u.verificado?'badge-green':'badge-gold'}">${u.verificado?'✔ Verificado':'⏳ Verificación pendiente'}</span>
       </div>
@@ -1014,13 +1168,23 @@ function viewPanel(){
       <div class="card">
         <h2>Tu perfil</h2>
         <div style="font-size:.9rem;line-height:1.9;">
-          <div><b>Tipo:</b> ${esc(u.tipo==='mecanico'?'Mecánico':(u.tipo==='repuestos'?'Tienda de repuestos':'Lubricentro'))}</div>
+          <div><b>Tipo:</b> ${esc(tipoLabel(u.tipo))}</div>
           <div><b>Especialidad:</b> ${esc(u.especialidad||'—')}</div>
           <div><b>Dirección:</b> ${esc(u.direccion||'—')}</div>
           ${u.horario?`<div><b>Horario:</b> ${esc(u.horario)}</div>`:''}
           ${u.tipo==='mecanico'?`<div><b>Experiencia:</b> ${u.aniosExperiencia||0} años</div>
           <div><b>Precio:</b> $${u.precioHora||0}/hora</div>`:''}
+          ${u.dni?`<div><b>Cédula:</b> ${esc(u.dni)}</div>`:''}
         </div>
+      </div>
+
+      <div class="card">
+        <h2>Estado de verificación</h2>
+        <p style="font-size:.9rem;color:var(--muted);">
+          ${u.verificado
+            ? '✔ Tu perfil está verificado. Los clientes pueden contactarte.'
+            : '⏳ Estamos revisando tu cédula y referencias. Te notificaremos cuando esté listo (24-48h).'}
+        </p>
       </div>
 
       <div class="card">
@@ -1032,12 +1196,13 @@ function viewPanel(){
       </div>
 
       <div class="card">
-        <h2>Próximos pasos</h2>
-        <ul style="font-size:.9rem;color:var(--muted);line-height:1.9;padding-left:20px;">
-          <li>Sube tu cédula y RIF para obtener la verificación ✔</li>
-          <li>Agrega fotos de tu local o de tus trabajos</li>
-          <li>Activa tu disponibilidad para recibir clientes</li>
-        </ul>
+        <h2>Fotos de tu negocio</h2>
+        <p style="font-size:.9rem;color:var(--muted);margin-bottom:12px;">
+          Pronto podrás subir fotos de tu local, trabajos o vehículos desde este panel.
+        </p>
+        <div style="background:#FAFAFA;border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;color:var(--muted);font-size:.85rem;">
+          📸 Subir fotos (próximamente)
+        </div>
       </div>
     </section>`;
 }
@@ -1048,12 +1213,8 @@ function viewPanel(){
 function getChats(){
   try{ return JSON.parse(localStorage.getItem('epa_chats')||'[]'); }catch{ return []; }
 }
-function saveChats(chats){
-  localStorage.setItem('epa_chats', JSON.stringify(chats));
-}
-function getChat(perfilId){
-  return getChats().find(c => c.perfilId === Number(perfilId));
-}
+function saveChats(chats){ localStorage.setItem('epa_chats', JSON.stringify(chats)); }
+function getChat(perfilId){ return getChats().find(c => c.perfilId === Number(perfilId)); }
 function crearChatSiNoExiste(perfilId){
   const chats = getChats();
   if(chats.find(c => c.perfilId === Number(perfilId))) return;
@@ -1066,7 +1227,6 @@ function enviarMensaje(perfilId, texto){
   if(!chat){ chat = { perfilId: Number(perfilId), mensajes: [] }; chats.unshift(chat); }
   chat.mensajes.push({ texto, emisor:'yo', hora: new Date().toISOString() });
   saveChats(chats);
-  // Respuesta automática simulada (se reemplazará por chat real con Supabase)
   setTimeout(()=>{
     const chats2 = getChats();
     const c2 = chats2.find(c => c.perfilId === Number(perfilId));
@@ -1115,7 +1275,6 @@ function viewChat(perfilId){
   crearChatSiNoExiste(perfilId);
   const chat = getChat(perfilId) || { mensajes: [] };
   const hora = iso => new Date(iso).toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
-
   return `
     <section class="section">
       <a href="#/chats" style="color:var(--muted);font-size:.9rem;">← Volver a chats</a>
@@ -1136,8 +1295,7 @@ function viewChat(perfilId){
                   <div class="msg ${m.emisor==='yo'?'msg-yo':'msg-ellos'}">
                     ${esc(m.texto)}
                     <span class="msg-hora">${hora(m.hora)}</span>
-                  </div>
-                `).join('')}
+                  </div>`).join('')}
           </div>
           <form class="chat-input" onsubmit="handleEnviarMensaje(event, ${p.id})">
             <input type="text" id="chatInput" placeholder="Escribe un mensaje…" autocomplete="off" required>
@@ -1175,19 +1333,27 @@ function handleLogin(e){
 function handleRegistro(e){
   e.preventDefault();
   const tipo = document.getElementById('regTipo').value;
-  const productosStr = document.getElementById('regProductos').value || '';
+  const productosStr = (document.getElementById('regProductos')?.value || '');
+  const tieneDniFoto = document.getElementById('regDniFoto')?.files?.length > 0;
+
   setUsuarioActual({
     nombre: document.getElementById('regNombre').value,
     tipo,
     especialidad: document.getElementById('regEspecialidad').value,
     direccion: document.getElementById('regDireccion').value,
     telefono: document.getElementById('regTelefono').value,
-    aniosExperiencia: Number(document.getElementById('regExp').value)||0,
-    precioHora: Number(document.getElementById('regPrecio').value)||0,
-    horario: document.getElementById('regHorario').value,
+    dni: document.getElementById('regDni').value,
+    dniFotoNombre: tieneDniFoto ? document.getElementById('regDniFoto').files[0].name : null,
+    banco: document.getElementById('regBanco').value,
+    ref1: document.getElementById('regRef1').value,
+    ref2: document.getElementById('regRef2').value,
+    aniosExperiencia: Number(document.getElementById('regExp')?.value)||0,
+    precioHora: Number(document.getElementById('regPrecio')?.value)||0,
+    horario: document.getElementById('regHorario')?.value || '',
     productosDestacados: productosStr ? productosStr.split(',').map(s=>s.trim()).filter(Boolean) : [],
     disponible:true, abierto:true, verificado:false,
-    descripcion: document.getElementById('regDesc').value
+    descripcion: document.getElementById('regDesc').value,
+    plan:'basico-1usd'
   });
   location.hash = '#/panel';
 }
@@ -1222,7 +1388,6 @@ function render(){
   renderNav();
   window.scrollTo(0,0);
 
-  // Inicializar mapas después de insertar HTML
   setTimeout(()=>{
     if(path==='/' || path===''){
       initMapa('mapa-home', PERFILES, { zoom: 9 });
@@ -1240,9 +1405,7 @@ function render(){
         if(map) map.setView([t.lat, t.lng], 15);
       }
     }
-    if(path==='/registro'){
-      toggleCamposRegistro();
-    }
+    if(path==='/registro'){ toggleCamposRegistro(); }
     if(path.startsWith('/chat/')){
       const msgs = document.getElementById('chat-msgs');
       if(msgs) msgs.scrollTop = msgs.scrollHeight;
@@ -1253,9 +1416,6 @@ function render(){
 window.addEventListener('hashchange', render);
 window.addEventListener('DOMContentLoaded', ()=>{ renderNav(); render(); });
 
-/* ============================================================
-   SERVICE WORKER
-   ============================================================ */
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js',{scope:'./'})
     .then(()=>console.log('Service Worker registrado'))
